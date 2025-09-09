@@ -19,8 +19,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
         'password',
+        'role',
     ];
 
     /**
@@ -41,8 +41,21 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function qrcodes()
+    {
+        return $this->hasMany(QrCode::class, 'guru_id');
+    }
+
+    public function attendances()
+    {
+        if ($this->role === 'siswa') {
+            return $this->hasMany(Attendance::class, 'siswa_id');
+        }
+        if ($this->role === 'guru') {
+            return $this->hasMany(Attendance::class, 'guru_id');
+        }
     }
 }

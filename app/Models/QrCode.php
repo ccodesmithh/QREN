@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class QrCode extends Model
+{
+    use HasFactory;
+
+    protected $table = 'qrcodes';
+
+    protected $fillable = [
+        'code',
+        'guru_id',
+    ];
+
+    public function guru()
+    {
+        return $this->belongsTo(User::class, 'guru_id');
+    }
+
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'qr_code_id');
+    }
+}
