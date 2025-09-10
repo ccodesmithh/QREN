@@ -7,12 +7,6 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-
-    <!-- <form action="{{ route('guru.qrcode.generate') }}" method="POST">
-        @csrf
-        <button type="submit" class="btn btn-primary mb-3">Generate QR Baru</button>
-    </form> -->
-
     @if($qr)
         <div class="card p-3">
             <h5>Kode: {{ $qr->code }}</h5>

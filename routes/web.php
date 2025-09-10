@@ -11,7 +11,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/generate-qr/{guruId}', [QrCodeController::class, 'generate']);
-// ini buat ngetes
+
+// ini buat testing doang
 Route::get('/scan/manuals', function(){
     return view('scan');
 })->name('scan.form');

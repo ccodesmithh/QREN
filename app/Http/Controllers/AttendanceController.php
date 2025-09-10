@@ -43,25 +43,25 @@ class AttendanceController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
-        $data = $request->input('qr_result');
+    // public function store(Request $request)
+    // {
+    //     $data = $request->input('qr_result');
 
-        try {
-            Attendance::create([
-                'siswa_id'   => $request->siswa_id ?? null,
-                'guru_id'    => $request->guru_id ?? null,
-                'qrcode_id'  => null,
-                'status'     => 'hadir',
-                'scanned_at' => now(),
-            ]);
+    //     try {
+    //         Attendance::create([
+    //             'siswa_id'   => $request->siswa_id ?? null,
+    //             'guru_id'    => $request->guru_id ?? null,
+    //             'qrcode_id'  => null,
+    //             'status'     => 'hadir',
+    //             'scanned_at' => now(),
+    //         ]);
 
-            return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'failed',
-                'error'  => $e->getMessage()
-            ], 500);
-        }
-    }
+    //         return response()->json(['status' => 'success']);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 'failed',
+    //             'error'  => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 }
