@@ -9,7 +9,7 @@
 <body>
     <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">QR Attendance</a>
+            <a class="navbar-brand" href="#">QREN</a>
         </div>
     </nav>
 

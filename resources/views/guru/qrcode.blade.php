@@ -8,10 +8,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('guru.qrcode.generate') }}" method="POST">
+    <!-- <form action="{{ route('guru.qrcode.generate') }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-primary mb-3">Generate QR Baru</button>
-    </form>
+    </form> -->
 
     @if($qr)
         <div class="card p-3">
@@ -19,7 +19,7 @@
             {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(250)->generate($qr->code) !!}
         </div>
     @else
-        <p>Belum ada QR Code. Klik tombol di atas untuk membuat.</p>
+        <p>Belum ada QR Code. Klik tombol untuk membuat.</p>
     @endif
 </div>
 <form action="{{ route('guru.qrcode.generate') }}" method="POST">
