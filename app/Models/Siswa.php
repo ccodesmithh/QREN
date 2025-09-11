@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Siswa extends Model
+class Siswa extends Authenticatable
 {
-    use HasFactory;
-
-    protected $table = 'siswas';
+    protected $table = 'siswas'; // tabel database
+    protected $primaryKey = 'id'; // bisa ubah kalau pakai id khusus
 
     protected $fillable = [
-        'nama',
-        'nis',
+        'nisn',
+        'password',
+        'name',
     ];
 
-    public function attendances()
+    //  override biar password kagak di-hash otomatis
+    public function getAuthPassword()
     {
-        return $this->hasMany(Attendance::class, 'siswa_id');
+        return $this->password;
     }
 }

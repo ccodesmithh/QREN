@@ -2,22 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Guru extends Model
+class Guru extends Authenticatable
 {
-    use HasFactory;
-
-    protected $table = 'gurus';
+    protected $table = 'gurus'; 
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'nama',
-        'email',
+        'idguru',
+        'password',
+        'name',
     ];
 
-    public function qrcodes()
+    public function getAuthPassword()
     {
-        return $this->hasMany(QrCode::class, 'guru_id');
+        return $this->password;
     }
 }

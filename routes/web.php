@@ -1,27 +1,50 @@
 <?php
 
-use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\QrCodeController;
-use App\Http\Controllers\ScanController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GuruAuthController;
+use App\Http\Controllers\Auth\SiswaAuthController;
+use App\Http\Controllers\GuruDashboardController;
+use App\Http\Controllers\SiswaDashboardController;
+use App\Http\Controllers\QRCodeController;
+use App\Models\Siswa;
 
-use function Laravel\Prompts\form;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/login/siswa', [SiswaAuthController::class, 'showLoginForm'])->name('siswa.login');
+Route::get('/', [SiswaAuthController::class, 'redirectToLogin']);
+
+// Siswa
+// Route::get('/login/siswa', [SiswaAuthController::class, 'showLoginForm'])->name('siswa.login');
+Route::post('/login/siswa', [SiswaAuthController::class, 'login'])->name('siswa.login.submit');
+Route::get('/logout/siswa', [SiswaAuthController::class, 'logout'])->name('siswa.logout');
+
+// Guru
+Route::get('/login/guru', [GuruAuthController::class, 'showLoginForm'])->name('guru.login');
+Route::post('/login/guru', [GuruAuthController::class, 'login'])->name('guru.login.submit');
+Route::post('/logout/guru', [GuruAuthController::class, 'logout'])->name('guru.logout');
+
+// // Dummy dashboard
+// Route::get('/dashboard/siswa', fn() => 'Halo Siswa!')->name('siswa.dashboard')->middleware('auth:siswa');
+// Route::get('/dashboard/guru', fn() => 'Halo Guru!')->name('guru.dashboard')->middleware('auth:guru');
+
+Route::middleware(['auth:siswa'])->group(function () {
+    Route::get('/siswa/dashboard', [SiswaDashboardController::class, 'index'])->name('siswa.dashboard');
+    Route::get('/scan', [SiswaDashboardController::class, 'scan'])->name('scan.index');
 });
-Route::get('/generate-qr/{guruId}', [QrCodeController::class, 'generate']);
 
-// ini buat testing doang
-Route::get('/scan/manuals', function(){
-    return view('scan');
-})->name('scan.form');
+Route::middleware(['auth:guru'])->group(function () {
+    Route::get('/guru/dashboard', [GuruDashboardController::class, 'index'])->name('guru.dashboard');
+    Route::get('/guru/generate', [QRCodeController::class, 'generate'])->name('guru.generate');
+});
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/scan', [AttendanceController::class, 'index'])->name('scan.index');
-// Route::post('/scan', [AttendanceController::class, 'store'])->name('scan.store');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-Route::post('/scan', [AttendanceController::class, 'scan'])->name('scan.submit');
-
-Route::get('/guru/qrcode', [QRCodeController::class, 'index'])->name('guru.qrcode.index');
-Route::post('/guru/qrcode/generate', [QRCodeController::class, 'generate'])->name('guru.qrcode.generate');
+require __DIR__.'/auth.php';
