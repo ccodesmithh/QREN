@@ -11,4 +11,9 @@ class SiswaDashboardController extends Controller
         $siswa = Auth::guard('siswa')->user();
         return view('dashboard.siswa', compact('siswa'));
     }
+    public function scan()
+    {
+        $siswa = Auth::guard('siswa')->user();
+        return view('scan.index', compact('siswa'));
+    }
 }

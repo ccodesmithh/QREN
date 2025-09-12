@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\SiswaAuthController;
 use App\Http\Controllers\GuruDashboardController;
 use App\Http\Controllers\SiswaDashboardController;
 use App\Http\Controllers\QRCodeController;
+use App\Http\Controllers\ScanController;
+use App\Http\Controllers\AttendanceController;
 use App\Models\Siswa;
 
 
@@ -29,7 +31,12 @@ Route::post('/logout/guru', [GuruAuthController::class, 'logout'])->name('guru.l
 
 Route::middleware(['auth:siswa'])->group(function () {
     Route::get('/siswa/dashboard', [SiswaDashboardController::class, 'index'])->name('siswa.dashboard');
-    Route::get('/scan', [SiswaDashboardController::class, 'scan'])->name('scan.index');
+    Route::get('/scan', [AttendanceController::class, 'index'])->name('scan.index');
+    Route::post('/scan', [AttendanceController::class, 'scan'])->name('scan.submit');
+    Route::get('/dashboard', function() {
+        $siswa = Siswa::all();
+        return view('dashboard', compact('siswa'));
+    })->name('siswa.dashboard');
 });
 
 Route::middleware(['auth:guru'])->group(function () {

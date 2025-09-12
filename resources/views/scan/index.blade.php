@@ -11,22 +11,57 @@
         .result { margin-top: 15px; font-size: 1.2rem; font-weight: bold; }
         #debug { text-align: left; max-height: 240px; overflow: auto; background: #f7f7f7; padding: 10px; border: 1px solid #ddd; margin: 15px auto; width: 90%; white-space: pre-wrap; font-family: monospace; font-size: 0.8rem; }
     </style>
+    <link href='https://cdn.boxicons.com/fonts/brands/boxicons-brands.min.css' rel='stylesheet'>
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{{ asset('css/scan.css') }}">
 </head>
 <body>
-    <h2>Scan QR Code</h2>
-    <div id="reader"></div>
-    <div class="result">
-        <p>Hasil Scan: <span id="resultText">-</span></p>
-        <br>
-        <p>&copy; {{ date('Y') }} Pasific Studios All Rights Reserved</p>
+    <div class="container">
+        <div class="navbar-container">
+            <div class="navbar-wrapper">
+                <i class='bx  bx-help-circle'  ></i> 
+                <i class='bx  bx-bolt'  ></i> 
+                <i class='bx  bx-camera-flip'  ></i> 
+            </div>
+        </div>
+        <div class="header">
+            <h1>QREN - QR Code Scanner</h1>
+            <p>Selamat datang, {{ Auth::user()->name }}! Scan QR Code untuk absensi</p>
+        </div>
+        <div class="camera-container">
+            <div class="camera-wrapper" id="reader">
+                <!-- Script kamera di sini -->
+            </div>
+        </div>
+        <div class="result">
+            Hasil Scan: <span id="resultText">-</span>
+        </div>
+        <p>Debug Log:</p>
         <p>Programmed by Yudha Prasetiya</p>
-        <!-- Debug -->
-        <p>Debug</p>
-        <pre id="debug">Debug log initialized...
-</pre>
-        
+        <div id="debug">
+            <h1>Debug log:</h1>
+            <pre></pre>
+        </div>
+        <!-- <div class="logout">
+            <form method="GET" action="{{ route('siswa.logout') }}">
+                @csrf
+                <button type="submit">Logout</button>
+            </form>
+        </div> -->
+        <div class="low-navbar-container">
+            <div class="low-navbar-wrapper">
+                <i class='bx  bx-home'  ></i> 
+                <i class='bx  bx-calendar'  ></i> 
+                <a href="{{ route('siswa.dashboard') }}"><i class='bx  bx-user'  ></i> </a>
+                <div class="logout">
+                    <form method="GET" action="{{ route('siswa.logout') }}">
+                        @csrf
+                        <button type="submit">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
 <script>
     // helper to append debug messages (and console.log)
     function appendDebug(...parts) {
