@@ -15,7 +15,7 @@ use App\Models\Siswa;
 Route::get('/login/siswa', [SiswaAuthController::class, 'showLoginForm'])->name('siswa.login');
 Route::get('/', [SiswaAuthController::class, 'redirectToLogin']);
 
-// Siswa
+// Siswa jadi default
 // Route::get('/login/siswa', [SiswaAuthController::class, 'showLoginForm'])->name('siswa.login');
 Route::post('/login/siswa', [SiswaAuthController::class, 'login'])->name('siswa.login.submit');
 Route::get('/logout/siswa', [SiswaAuthController::class, 'logout'])->name('siswa.logout');
@@ -23,7 +23,7 @@ Route::get('/logout/siswa', [SiswaAuthController::class, 'logout'])->name('siswa
 // Guru
 Route::get('/login/guru', [GuruAuthController::class, 'showLoginForm'])->name('guru.login');
 Route::post('/login/guru', [GuruAuthController::class, 'login'])->name('guru.login.submit');
-Route::post('/logout/guru', [GuruAuthController::class, 'logout'])->name('guru.logout');
+Route::get('/logout/guru', [GuruAuthController::class, 'logout'])->name('guru.logout');
 
 // // Dummy dashboard
 // Route::get('/dashboard/siswa', fn() => 'Halo Siswa!')->name('siswa.dashboard')->middleware('auth:siswa');
@@ -37,11 +37,12 @@ Route::middleware(['auth:siswa'])->group(function () {
         $siswa = Siswa::all();
         return view('dashboard', compact('siswa'));
     })->name('siswa.dashboard');
+    Route::get('/siswa/history', [AttendanceController::class, 'history'])->name('siswa.history');
 });
 
 Route::middleware(['auth:guru'])->group(function () {
     Route::get('/guru/dashboard', [GuruDashboardController::class, 'index'])->name('guru.dashboard');
-    Route::get('/guru/generate', [QRCodeController::class, 'generate'])->name('guru.generate');
+    Route::get('/guru/generate', [QRCodeController::class, 'index'])->name('guru.generate');
 });
 
 Route::get('/dashboard', function () {

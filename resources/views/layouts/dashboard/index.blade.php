@@ -24,12 +24,37 @@
     <link href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-lite.min.js"></script>
+    <style>
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-color: #fff; /* Ubah warna latar sesuai kebutuhan */
+            display: flex; /* Untuk memusatkan konten loading */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+    </style>
 
 </head>
 
 <body id="page-top">
+        <div id="preloader">
+            <div class="loading">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+            <span>Loading...</span> 
+            <br>
+            <p>Programmed by Yudha Prasetiya</p>
+        </div>
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -49,22 +74,7 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="{{route('siswa.dashboard')}}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>History</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Profil</span></a>
-            </li>
+            @yield('sidebar')
 
             
         </ul>
@@ -125,7 +135,7 @@
                             </div>
                         </li>
 
-                        <!-- Nav Item - User Information -->
+                            <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -216,14 +226,33 @@
                 <div class="modal-body">Pilih "Logout" dibawah jika anda yakin ingin mengakhiri sesi.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-danger">Logout</button>
-                    </form>
+                    @if(Auth::guard('siswa')->check())
+                        <form method="GET" action="{{ route('siswa.logout') }}">
+                    @elseif(Auth::guard('guru')->check())
+                        <form method="GET" action="{{ route('guru.logout') }}">
+                    @else
+                        <form method="GET" action="{{ route('logout') }}">
+                    @csrf
+                    @endif
+                            <button type="submit" class="btn btn-danger">Logout</button>
+                        </form>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.style.transition = 'opacity 0.5s ease';
+                preloader.style.opacity = '0';
+
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500);
+            }
+        });
+    </script>
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>

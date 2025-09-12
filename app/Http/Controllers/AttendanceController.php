@@ -43,6 +43,18 @@ class AttendanceController extends Controller
         }
     }
 
+    public function history(Request $request)
+    {
+        $siswaId = $request->siswa_id;
+
+        $attendances = Attendance::where('siswa_id', $siswaId)
+            ->with('guru', 'qrcode')
+            ->orderBy('scanned_at', 'desc')
+            ->get();
+
+        return view('siswa.history', compact('attendances'));
+    }
+
     // public function store(Request $request)
     // {
     //     $data = $request->input('qr_result');

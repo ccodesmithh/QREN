@@ -15,6 +15,7 @@ class GuruAuthController extends Controller
 
     public function login(Request $request)
     {
+        
         $credentials = $request->only('idguru', 'password');
 
         $guru = \App\Models\Guru::where('idguru', $credentials['idguru'])->first();
