@@ -8,7 +8,7 @@
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ route('guru.qrcode.index') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-fw fa-camera"></i>
             <span>QR</span></a>
     </li>
     <li class="nav-item">

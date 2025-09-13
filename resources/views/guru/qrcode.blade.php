@@ -8,11 +8,11 @@
     </li>
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('guru.qrcode.index') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-fw fa-camera"></i>
             <span>QR</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ route('guru.profile') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>
     </li>
@@ -37,14 +37,18 @@
 <form action="{{ route('guru.qrcode.generate') }}" method="POST">
     @csrf
     <div class="mb-3">
-        <label for="guru_id" class="form-label">Pilih Guru Ini cuma buat tes</label>
+        <!-- <label for="guru_id" class="form-label">Pilih Guru Ini cuma buat tes</label>
         <select name="guru_id" id="guru_id" class="form-select">
             @foreach(\App\Models\Guru::all() as $guru)
                 <option value="{{ $guru->id }}">{{ $guru->name }}</option>
             @endforeach
-        </select>
+        </select> -->
     </div>
-    <button type="submit" class="btn btn-primary mb-3">Generate QR Baru</button>
+    @if ($qr)
+        <button type="submit" class="btn btn-secondary" disabled>QR Code Sudah Ada</button>
+    @else
+        <button type="submit" class="btn btn-primary">Generate QR Code</button>
+    @endif
     
 </form>
 

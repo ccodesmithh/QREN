@@ -2,24 +2,19 @@
 @section('sidebar')
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="{{route('siswa.dashboard')}}">
+        <a class="nav-link" href="{{route('guru.dashboard')}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('siswa.history') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>History</span></a>
+        <a class="nav-link" href="{{ route('guru.qrcode.index') }}">
+            <i class="fas fa-fw fa-camera"></i>
+            <span>QR</span></a>
     </li>
     <li class="nav-item active">
-        <a class="nav-link" href="{{ route('siswa.profile') }}">
+        <a class="nav-link" href="{{ route('guru.profile') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('scan.index') }}">
-            <i class="fas fa-fw fa-camera"></i>
-            <span>Scan</span></a>
     </li>
 @endsection
 @section('content')
