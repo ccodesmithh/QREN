@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\QrCode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
@@ -46,8 +47,19 @@ class AttendanceController extends Controller
     public function history()
     {
         $attendances = Attendance::with(['siswa', 'guru', 'qrcode'])->latest()->get();
+
+        // Debug: cek isi data
+        foreach ($attendances as $a) {
+            Log::info('Attendance debug', [
+                'attendance_id' => $a->id,
+                'guru_id'       => $a->guru_id,
+                'guru_relation' => $a->guru, // ini seharusnya tampil object guru
+            ]);
+        }
+
         return view('siswa.history', compact('attendances'));
     }
+
     // public function store(Request $request)
     // {
     //     $data = $request->input('qr_result');

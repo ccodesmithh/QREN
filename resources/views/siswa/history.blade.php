@@ -42,7 +42,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $attendance->created_at->format('d-m-Y H:i:s') }}</td>
                         <td>{{ $attendance->qr_code }}</td>
-                        <td>{{ $attendance->guru_id }}</td>
+                        <td>{{ $attendance->guru->name ?? '-' }}</td>
                         <td>{{ $attendance->status }}</td>
                     </tr>
                     @endforeach

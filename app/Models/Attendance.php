@@ -22,13 +22,13 @@ class Attendance extends Model
     // Relasi ke User (siswa)
     public function siswa()
     {
-        return $this->belongsTo(User::class, 'siswa_id');
+        return $this->belongsTo(Siswa::class, 'siswa_id');
     }
 
     // Relasi ke User (guru)
     public function guru()
     {
-        return $this->belongsTo(User::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 
     // Relasi ke QR Code
