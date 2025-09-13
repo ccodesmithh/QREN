@@ -7,7 +7,7 @@
             <span>Dashboard</span></a>
     </li>
     <li class="nav-item active">
-        <a class="nav-link" href="{{ route('guru.generate') }}">
+        <a class="nav-link" href="{{ route('guru.qrcode.index') }}">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>QR</span></a>
     </li>
@@ -34,7 +34,7 @@
         <p>Belum ada QR Code. Klik tombol untuk membuat.</p>
     @endif
 </div>
-<form action="{{ route('guru.generate') }}" method="POST">
+<form action="{{ route('guru.qrcode.generate') }}" method="POST">
     @csrf
     <div class="mb-3">
         <label for="guru_id" class="form-label">Pilih Guru Ini cuma buat tes</label>
@@ -45,6 +45,7 @@
         </select>
     </div>
     <button type="submit" class="btn btn-primary mb-3">Generate QR Baru</button>
+    
 </form>
 
 @endsection

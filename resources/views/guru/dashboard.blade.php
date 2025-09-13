@@ -7,7 +7,7 @@
             <span>Dashboard</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('guru.generate') }}">
+        <a class="nav-link" href="{{ route('guru.qrcode.index') }}">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>QR</span></a>
     </li>

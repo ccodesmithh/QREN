@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('siswa_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('guru_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('siswa_id')->constrained('siswas')->onDelete('cascade');
+            $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
             $table->foreignId('qrcode_id')->constrained('qrcodes')->onDelete('cascade');
             $table->enum('status', ['hadir', 'izin', 'alpha'])->default('hadir');
             $table->timestamp('scanned_at')->nullable();

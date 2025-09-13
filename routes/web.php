@@ -42,7 +42,8 @@ Route::middleware(['auth:siswa'])->group(function () {
 
 Route::middleware(['auth:guru'])->group(function () {
     Route::get('/guru/dashboard', [GuruDashboardController::class, 'index'])->name('guru.dashboard');
-    Route::get('/guru/generate', [QRCodeController::class, 'index'])->name('guru.generate');
+    Route::get('/guru/qrcode', [QRCodeController::class, 'index'])->name('guru.qrcode.index');
+    Route::post('/guru/qrcode/generate', [QRCodeController::class, 'generate'])->name('guru.qrcode.generate');
 });
 
 Route::get('/dashboard', function () {
