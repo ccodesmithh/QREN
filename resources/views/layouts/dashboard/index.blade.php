@@ -223,7 +223,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Pilih "Logout" dibawah jika anda yakin ingin mengakhiri sesi.</div>
+                <div class="modal-body">Peringatan: Jika anda keluar, anda perlu meminta token kembali kepada operator.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                     @if(Auth::guard('siswa')->check())

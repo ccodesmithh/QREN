@@ -10,12 +10,34 @@
         #reader { width: 300px; margin: auto; }
         .result { margin-top: 15px; font-size: 1.2rem; font-weight: bold; }
         #debug { text-align: left; max-height: 240px; overflow: auto; background: #f7f7f7; padding: 10px; border: 1px solid #ddd; margin: 15px auto; width: 90%; white-space: pre-wrap; font-family: monospace; font-size: 0.8rem; }
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-color: #fff; /* Ubah warna latar sesuai kebutuhan */
+            display: flex; /* Untuk memusatkan konten loading */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
     <link href='https://cdn.boxicons.com/fonts/brands/boxicons-brands.min.css' rel='stylesheet'>
     <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{{ asset('css/scan.css') }}">
 </head>
 <body>
+        <div id="preloader">
+            <div class="loading">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+            <span>Loading...</span> 
+            <br>
+            <p>Programmed by Yudha Prasetiya</p>
+        </div>
+
     <div class="container">
         <div class="navbar-container">
             <div class="navbar-wrapper">
@@ -63,6 +85,15 @@
         </div>
     </div>
 <script>
+    // Preloader
+    document.addEventListener("DOMContentLoaded", function() {
+        // Simulate loading time (you can remove this in production)
+        setTimeout(function() {
+            const preloader = document.getElementById("preloader");
+            preloader.style.display = "none";
+        }, 1000); // Adjust the timeout duration as needed
+    });
+
     // helper to append debug messages (and console.log)
     function appendDebug(...parts) {
         const pre = document.getElementById('debug');
