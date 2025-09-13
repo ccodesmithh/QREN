@@ -33,7 +33,7 @@ Route::get('/logout/guru', [GuruAuthController::class, 'logout'])->name('guru.lo
 Route::middleware(['auth:siswa'])->group(function () {
     Route::get('/siswa/dashboard', [SiswaDashboardController::class, 'index'])->name('siswa.dashboard');
     Route::get('/scan', [AttendanceController::class, 'index'])->name('scan.index');
-    Route::post('/scan', [AttendanceController::class, 'scan'])->name('scan.submit');
+    Route::post('/scan/submit', [AttendanceController::class, 'scan'])->name('scan.submit');
     Route::get('/dashboard', function() {
         $siswa = Siswa::all();
         return view('dashboard', compact('siswa'));

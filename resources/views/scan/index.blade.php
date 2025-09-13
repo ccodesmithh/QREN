@@ -112,7 +112,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
+            /* backdrop-filter: blur(10px); */
             z-index: 999;
             display: flex;
             flex-direction: column;
@@ -164,7 +164,6 @@
         <p>Programmed by Yudha Prasetiya</p>
     </div>
     <div id="camera-overlay">
-        <!-- <h2>QREN</h2> -->
         <img src="{{ asset('img/type2-white.png') }}" alt="" loading="lazy" style="width: 200px; height: auto;">
         <p>&copy 2025 PancaIT All Rights Reserved</p>
         <button id="camera-trigger">
@@ -274,80 +273,81 @@
         }
 
         // helper to append debug messages (and console.log)
-        function appendDebug(...parts) {
-            const pre = document.querySelector('#debug pre');
-            const text = parts.map(p => {
-                try {
-                    return typeof p === 'string' ? p : JSON.stringify(p, null, 2);
-                } catch(e) {
-                    return String(p);
-                }
-            }).join(' ');
-            pre.textContent += text + "\n";
-            pre.scrollTop = pre.scrollHeight;
-            console.log(...parts);
-        }
+    function appendDebug(...parts) {
+        const pre = document.getElementById('debug');
+        const text = parts.map(p => {
+            try { return typeof p === 'string' ? p : JSON.stringify(p, null, 2); } catch(e) { return String(p); }
+        }).join(' ');
+        pre.textContent += text + "\n";
+        pre.scrollTop = pre.scrollHeight;
+        console.log(...parts);
+    }
 
-        function onScanSuccess(decodedText, decodedResult) {
-            document.getElementById('resultText').innerText = decodedText;
-            appendDebug('Scan success:', decodedText);
+    function onScanSuccess(decodedText, decodedResult) {
+        document.getElementById('resultText').innerText = decodedText;
+        appendDebug('Scan success:', decodedText);
 
-            // Demo URL untuk testing (ganti dengan URL Laravel Anda)
-            const url = "/scan/submit";
-            const payload = {
-                siswa_id: 1,
-                code: decodedText
-            };
+        const url = "{{ route('scan.submit') }}";
+        const payload = {
+            siswa_id: 1, // untuk tes
+            code: decodedText
+        };
 
-            appendDebug('Sending POST to', url, 'payload:', payload);
+        appendDebug('Sending POST to', url, 'payload:', payload);
 
-            // Simulasi request (ganti dengan fetch ke Laravel endpoint)
-            setTimeout(() => {
-                appendDebug('Simulated successful response');
-                alert('QR Code berhasil discan: ' + decodedText);
-            }, 500);
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(async res => {
+            appendDebug('HTTP status:', res.status, res.statusText);
+            appendDebug('Response Content-Type:', res.headers.get('content-type'));
+            const text = await res.text();
+            appendDebug('Raw response body:', text);
+            try {
+                const json = JSON.parse(text || '{}');
+                appendDebug('Parsed JSON response:', json);
+                // pass along parsed JSON and status for next then()
+                return { ok: res.ok, status: res.status, json };
+            } catch (err) {
+                appendDebug('Failed to parse JSON:', err.message);
+                // still return raw text in case server returned HTML/error page
+                return { ok: res.ok, status: res.status, raw: text };
+            }
+        })
+        .then(data => {
+            if (!data) {
+                appendDebug('No response data received');
+                alert('No response: check debug panel');
+                return;
+            }
+            if (data.json) {
+                appendDebug('Final JSON payload:', data.json);
+                const message = data.json.message ?? (data.json.error ?? 'OK');
+                alert(message);
+            } else {
+                appendDebug('Final raw payload:', data.raw ?? data);
+                alert('Received non-JSON response. See debug panel.');
+            }
+        })
+        .catch(err => {
+            appendDebug('Fetch error:', err.message);
+            alert('Error occurred. See debug panel for details.');
+        });
+    }
 
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "X-CSRF-TOKEN": "YOUR_CSRF_TOKEN_HERE"
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(async res => {
-                appendDebug('HTTP status:', res.status, res.statusText);
-                const text = await res.text();
-                appendDebug('Raw response body:', text);
-                
-                try {
-                    const json = JSON.parse(text || '{}');
-                    appendDebug('Parsed JSON response:', json);
-                    return { ok: res.ok, status: res.status, json };
-                } catch (err) {
-                    appendDebug('Failed to parse JSON:', err.message);
-                    return { ok: res.ok, status: res.status, raw: text };
-                }
-            })
-            .then(data => {
-                if (data.json) {
-                    const message = data.json.message ?? (data.json.error ?? 'OK');
-                    alert(message);
-                } else {
-                    alert('Received non-JSON response. See debug panel.');
-                }
-            })
-            .catch(err => {
-                appendDebug('Fetch error:', err.message);
-                alert('Error occurred. See debug panel for details.');
-            });
-        }
 
-        function onScanFailure(error) {
-            // Log scan failures for debugging (but keep console noise low)
-            appendDebug('Scan failure (ignored):', error && error.message ? error.message : error);
-        }
+    function onScanFailure(error) {
+        // Log scan failures for debugging (but keep console noise low)
+        appendDebug('Scan failure (ignored):', error && error.message ? error.message : error);
+    }
+
+
     </script>
 </body>
 </html>

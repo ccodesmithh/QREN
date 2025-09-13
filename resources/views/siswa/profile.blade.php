@@ -27,9 +27,11 @@
         <div class="content">
             <h1>Profil Siswa</h1>
             <p><strong>Nama:</strong> {{ $siswa->name }}</p>
-            <p><strong>NIS:</strong> {{ $siswa->nis }}</p>
+            <p><strong>NIS:</strong> {{ $siswa->nisn }}</p>
             <p><strong>Kelas:</strong> {{ $siswa->kelas->kelas }}</p>
             <p><strong>Jurusan:</strong> {{ $siswa->jurusan->jurusan }}</p>
+            <hr>
+            <p>Terdapat kesalahan? Silakan hubungi operator untuk merubah data.</p>
         </div>
     </div>
 @endsection
