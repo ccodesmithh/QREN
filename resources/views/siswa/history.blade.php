@@ -16,6 +16,11 @@
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('scan.index') }}">
+            <i class="fas fa-fw fa-camera"></i>
+            <span>Scan</span></a>
+    </li>
 @endsection
 @section('content')
 <div class="container">
