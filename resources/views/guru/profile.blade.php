@@ -25,12 +25,10 @@
 @section('content')
     <div class="container">
         <div class="content">
-            <h1>Profil Siswa</h1>
+            <h1>Profil Guru</h1>
             <hr>
-            <p><strong>Nama:</strong> {{ $siswa->name }}</p>
-            <p><strong>NIS:</strong> {{ $siswa->nisn }}</p>
-            <p><strong>Kelas:</strong> {{ $siswa->kelas->kelas }}</p>
-            <p><strong>Jurusan:</strong> {{ $siswa->jurusan->jurusan }}</p>
+            <p><strong>Nama:</strong> {{ $guru->name }}</p>
+            <p><strong>IDGURU:</strong> {{ $guru->idguru }}</p>
             <hr>
             <p>Terdapat kesalahan? Silakan hubungi operator untuk merubah data.</p>
         </div>
