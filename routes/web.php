@@ -9,6 +9,7 @@ use App\Http\Controllers\SiswaDashboardController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ProfileSiswaController;
 use App\Models\Siswa;
 
 
@@ -38,6 +39,7 @@ Route::middleware(['auth:siswa'])->group(function () {
         return view('dashboard', compact('siswa'));
     })->name('siswa.dashboard');
     Route::get('/siswa/history', [AttendanceController::class, 'history'])->name('siswa.history');
+    Route::get('/siswa/profile', [ProfileSiswaController::class, 'index'])->name('siswa.profile');
 });
 
 Route::middleware(['auth:guru'])->group(function () {

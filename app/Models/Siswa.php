@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
 class Siswa extends Authenticatable
 {
@@ -19,5 +20,14 @@ class Siswa extends Authenticatable
     public function getAuthPassword()
     {
         return $this->password;
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id');
+    }
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class, 'jurusan_id');
     }
 }
