@@ -24,11 +24,6 @@
 @endsection
 @section('content')
 <div class="container">
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
     <h1>Jadwal Mengajar</h1>
     <p>Berikut adalah jadwal mengajar Anda.</p>
     @if ($jadwals->count() == 0)
@@ -60,5 +55,7 @@
     </div>
     @endif
     <a href="{{ route('guru.ajar') }}" class="btn btn-primary">Tambah Jadwal</a>
+    <hr>
+    <p>Jadwal akan dihapus dalam 18 jam.</p>
 </div>
 @endsection

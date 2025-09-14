@@ -25,16 +25,6 @@
 
 @section('content')
 <div class="container">
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    
-    @elseif (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
     <h1>Ajar</h1>
     <p>Silakan set jadwal mengajar anda.</p>
     <div class="content">
@@ -82,6 +72,8 @@
             </div>
             <button type="submit" class="btn btn-primary">Simpan Jadwal</button>
         </form>
+        <hr>
+        <p>Jadwal akan dihapus dalam 18 jam.</p>
     </div>
 </div>
 @endsection

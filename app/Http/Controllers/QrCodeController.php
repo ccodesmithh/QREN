@@ -17,8 +17,9 @@ class QrCodeController extends Controller
 
     public function generate(Request $request)
     {
+        $guru = auth()->guard('guru')->user();
         $request->validate([
-            'guru_id' => 'required|exists:gurus,id',
+            'guru_id' => $guru,
         ]);
 
         $code = 'QREN-' . strtoupper(Str::random(8)); // contoh kode unik
@@ -32,7 +33,7 @@ class QrCodeController extends Controller
         } else {
             // buat baru
             $qr = QrCode::create([
-                'guru_id' => $request->guru_id,
+                'guru_id' => $guru->id,
                 'code'    => $code,
             ]);
         }
