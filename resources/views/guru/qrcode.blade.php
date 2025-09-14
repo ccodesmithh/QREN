@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard.index')
 @section('sidebar')
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
@@ -16,6 +16,12 @@
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>
     </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{{ route('guru.jadwal') }}">
+            <i class="fas fa-fw fa-book"></i>
+            <span>Jadwal Mengajar</span></a>
+    </li>
+
 @endsection
 
 @section('content')

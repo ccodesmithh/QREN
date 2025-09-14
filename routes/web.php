@@ -11,6 +11,7 @@ use App\Http\Controllers\ScanController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileSiswaController;
 use App\Http\Controllers\ProfileGuruController;
+use App\Http\Controllers\AjarController;
 use App\Models\Siswa;
 
 
@@ -48,6 +49,9 @@ Route::middleware(['auth:guru'])->group(function () {
     Route::get('/guru/qrcode', [QRCodeController::class, 'index'])->name('guru.qrcode.index');
     Route::post('/guru/qrcode/generate', [QRCodeController::class, 'generate'])->name('guru.qrcode.generate');
     Route::get('guru/profile', [ProfileGuruController::class, 'index'])->name('guru.profile');
+    Route::get('guru/jadwal', [AjarController::class, 'jadwal'])->name('guru.jadwal');
+    Route::get('guru/ajar', [AjarController::class, 'index'])->name('guru.ajar');
+    Route::post('guru/ajar/store', [AjarController::class, 'store'])->name('guru.ajar.store');
 });
 
 Route::get('/dashboard', function () {
