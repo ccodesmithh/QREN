@@ -14,6 +14,7 @@ class QrCode extends Model
     protected $fillable = [
         'code',
         'guru_id',
+        'ajar_id',
     ];
 
     public function guru()
@@ -21,6 +22,10 @@ class QrCode extends Model
         return $this->belongsTo(User::class, 'guru_id');
     }
 
+    public function ajar()
+    {
+        return $this->belongsTo(Ajar::class);
+    }
 
     public function attendances()
     {

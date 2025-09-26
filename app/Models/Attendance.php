@@ -19,6 +19,10 @@ class Attendance extends Model
         'scanned_at',
     ];
 
+    protected $casts = [
+        'scanned_at' => 'datetime',
+    ];
+
     // Relasi ke User (siswa)
     public function siswa()
     {

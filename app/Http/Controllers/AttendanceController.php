@@ -35,7 +35,18 @@ class AttendanceController extends Controller
                 'scanned_at' => now(),
             ]);
 
-            return response()->json(['message' => 'Absensi berhasil dicatat']);
+            $ajar = $qr->ajar;
+            return response()->json([
+                'message' => 'Absensi berhasil dicatat',
+                'ajar' => [
+                    'guru_name' => $ajar->guru->name ?? 'N/A',
+                    'mapel_name' => $ajar->mapel->nama_mapel ?? 'N/A',
+                    'kelas_name' => $ajar->kelas->nama_kelas ?? 'N/A',
+                    'jurusan_name' => $ajar->jurusan->nama_jurusan ?? 'N/A',
+                    'jam_awal' => $ajar->jam_awal,
+                    'jam_akhir' => $ajar->jam_akhir,
+                ]
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Gagal menyimpan absensi',
@@ -46,16 +57,7 @@ class AttendanceController extends Controller
 
     public function history()
     {
-        $attendances = Attendance::with(['siswa', 'guru', 'qrcode'])->latest()->get();
-
-        // Debug: cek isi data
-        foreach ($attendances as $a) {
-            Log::info('Attendance debug', [
-                'attendance_id' => $a->id,
-                'guru_id'       => $a->guru_id,
-                'guru_relation' => $a->guru, // ini seharusnya tampil object guru
-            ]);
-        }
+        $attendances = Attendance::with(['siswa', 'guru', 'qrcode.ajar'])->latest()->get();
 
         return view('siswa.history', compact('attendances'));
     }

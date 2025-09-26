@@ -31,31 +31,49 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    @if($qr)
-        <div class="card p-3">
-            <h5>Kode: {{ $qr->code }}</h5>
-            {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(250)->generate($qr->code) !!}
-        </div>
+
+    <h3>Jadwal Mengajar</h3>
+    @if($ajars->count() > 0)
+        <table class="table" style="overflow-y: auto;">
+            <thead>
+                <tr>
+                    <th>Mata Pelajaran</th>
+                    <th>Kelas</th>
+                    <th>Jurusan</th>
+                    <th>Jam Awal</th>
+                    <th>Jam Akhir</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($ajars as $ajar)
+                    <tr>
+                        <td>{{ $ajar->mapel->nama_mapel ?? 'N/A' }}</td>
+                        <td>{{ $ajar->kelas->nama_kelas ?? 'N/A' }}</td>
+                        <td>{{ $ajar->jurusan->nama_jurusan ?? 'N/A' }}</td>
+                        <td>{{ $ajar->jam_awal }}</td>
+                        <td>{{ $ajar->jam_akhir }}</td>
+                        <td>
+                            @if($ajar->qrcode)
+                                <div class="card p-2">
+                                    <h6>Kode: {{ $ajar->qrcode->code }}</h6>
+                                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)->generate($ajar->qrcode->code) !!}
+                                </div>
+                            @else
+                                <form action="{{ route('guru.qrcode.generate') }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <input type="hidden" name="ajar_id" value="{{ $ajar->id }}">
+                                    <button type="submit" class="btn btn-primary btn-sm">Generate QR</button>
+                                </form>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     @else
-        <p>Belum ada QR Code. Klik tombol untuk membuat.</p>
+        <p>Tidak ada jadwal mengajar.</p>
     @endif
 </div>
-<form action="{{ route('guru.qrcode.generate') }}" method="POST">
-    @csrf
-    <div class="mb-3">
-        <!-- <label for="guru_id" class="form-label">Pilih Guru Ini cuma buat tes</label>
-        <select name="guru_id" id="guru_id" class="form-select">
-            @foreach(\App\Models\Guru::all() as $guru)
-                <option value="{{ $guru->id }}">{{ $guru->name }}</option>
-            @endforeach
-        </select> -->
-    </div>
-    @if ($qr)
-        <button type="submit" class="btn btn-secondary" disabled>QR Code Sudah Ada</button>
-    @else
-        <button type="submit" class="btn btn-primary">Generate QR Code</button>
-    @endif
-    
-</form>
 
 @endsection

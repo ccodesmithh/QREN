@@ -35,20 +35,22 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Tanggal</th>
-                        <th>Kode QR</th>
                         <th>Guru</th>
+                        <th>Mata Pelajaran</th>
+                        <th>Jam Awal - Akhir</th>
                         <th>Status</th>
+                        <th>Scanned At</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($attendances as $index => $attendance)
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td>{{ $attendance->created_at->format('d-m-Y H:i:s') }}</td>
-                        <td>{{ $attendance->qr_code }}</td>
-                        <td>{{ $attendance->guru->name ?? '-' }}</td>
+                        <td>{{ $attendance->qrcode->ajar->guru->name ?? '-' }}</td>
+                        <td>{{ $attendance->qrcode->ajar->mapel->nama_mapel ?? '-' }}</td>
+                        <td>{{ $attendance->qrcode->ajar->jam_awal ?? '-' }} - {{ $attendance->qrcode->ajar->jam_akhir ?? '-' }}</td>
                         <td>{{ $attendance->status }}</td>
+                        <td>{{ $attendance->scanned_at ? $attendance->scanned_at->format('d-m-Y H:i:s') : '-' }}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -19,4 +19,9 @@ class Guru extends Authenticatable
     {
         return $this->password;
     }
+
+    public function ajars()
+    {
+        return $this->hasMany(Ajar::class, 'guru_id');
+    }
 }

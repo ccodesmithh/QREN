@@ -38,4 +38,9 @@ class Ajar extends Model
     {
         return $this->belongsTo(Jurusan::class);
     }
+
+    public function qrcode()
+    {
+        return $this->hasOne(QrCode::class);
+    }
 }
