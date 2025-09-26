@@ -52,6 +52,8 @@ Route::middleware(['auth:guru'])->group(function () {
     Route::get('guru/jadwal', [AjarController::class, 'jadwal'])->name('guru.jadwal');
     Route::get('guru/ajar', [AjarController::class, 'index'])->name('guru.ajar');
     Route::post('guru/ajar/store', [AjarController::class, 'store'])->name('guru.ajar.store');
+    Route::get('/guru/attendance/{ajar}', [AttendanceController::class, 'attendanceByAjar'])->name('guru.attendance');
+    Route::post('/guru/attendance/{ajar}/manual', [AttendanceController::class, 'manualAttendance'])->name('guru.attendance.manual');
 });
 
 Route::get('/dashboard', function () {

@@ -62,6 +62,65 @@ class AttendanceController extends Controller
         return view('siswa.history', compact('attendances'));
     }
 
+    public function attendanceByAjar($ajarId)
+    {
+        $ajar = \App\Models\Ajar::with('mapel', 'kelas', 'jurusan')->findOrFail($ajarId);
+
+        // Ensure the guru owns this ajar
+        if ($ajar->guru_id != auth('guru')->id()) {
+            abort(403);
+        }
+
+        $qrcode = $ajar->qrcode;
+        if (!$qrcode) {
+            $attendances = collect(); // Empty if no QR generated
+        } else {
+            $attendances = Attendance::where('qrcode_id', $qrcode->id)->with('siswa')->get();
+        }
+
+        return view('guru.attendance', compact('ajar', 'attendances'));
+    }
+
+    public function manualAttendance(Request $request, $ajarId)
+    {
+        $request->validate([
+            'nisn' => 'required|string',
+        ]);
+
+        $ajar = \App\Models\Ajar::findOrFail($ajarId);
+
+        // Ensure the guru owns this ajar
+        if ($ajar->guru_id != auth('guru')->id()) {
+            abort(403);
+        }
+
+        $siswa = \App\Models\Siswa::where('nisn', $request->nisn)->first();
+        if (!$siswa) {
+            return back()->withErrors(['nisn' => 'Siswa dengan NISN tersebut tidak ditemukan.']);
+        }
+
+        $qrcode = $ajar->qrcode;
+        if (!$qrcode) {
+            return back()->withErrors(['error' => 'QR Code belum dibuat untuk ajar ini.']);
+        }
+
+        // Check if already attended
+        $existing = Attendance::where('qrcode_id', $qrcode->id)->where('siswa_id', $siswa->id)->first();
+        if ($existing) {
+            return back()->withErrors(['nisn' => 'Siswa ini sudah melakukan absensi.']);
+        }
+
+        Attendance::create([
+            'siswa_id' => $siswa->id,
+            'guru_id' => $ajar->guru_id,
+            'qrcode_id' => $qrcode->id,
+            'status' => 'hadir',
+            'scanned_at' => now(),
+        ]);
+
+        return back()->with('success', 'Absensi berhasil ditambahkan untuk ' . $siswa->name);
+    }
+
     // public function store(Request $request)
     // {
     //     $data = $request->input('qr_result');

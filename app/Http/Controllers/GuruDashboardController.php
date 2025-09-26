@@ -9,6 +9,8 @@ class GuruDashboardController extends Controller
     public function index()
     {
         $guru = Auth::guard('guru')->user();
-        return view('guru.dashboard', compact('guru'));
+        /** @var \App\Models\Guru $guru */
+        $ajars = $guru->ajars()->with('mapel', 'kelas', 'jurusan')->get();
+        return view('guru.dashboard', compact('guru', 'ajars'));
     }
 }
