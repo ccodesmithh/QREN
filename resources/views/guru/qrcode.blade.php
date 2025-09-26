@@ -34,43 +34,45 @@
 
     <h3>Jadwal Mengajar</h3>
     @if($ajars->count() > 0)
-        <table class="table" style="overflow-y: auto;">
-            <thead>
-                <tr>
-                    <th>Mata Pelajaran</th>
-                    <th>Kelas</th>
-                    <th>Jurusan</th>
-                    <th>Jam Awal</th>
-                    <th>Jam Akhir</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($ajars as $ajar)
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{{ $ajar->mapel->nama_mapel ?? 'N/A' }}</td>
-                        <td>{{ $ajar->kelas->nama_kelas ?? 'N/A' }}</td>
-                        <td>{{ $ajar->jurusan->nama_jurusan ?? 'N/A' }}</td>
-                        <td>{{ $ajar->jam_awal }}</td>
-                        <td>{{ $ajar->jam_akhir }}</td>
-                        <td>
-                            @if($ajar->qrcode)
-                                <div class="card p-2">
-                                    <h6>Kode: {{ $ajar->qrcode->code }}</h6>
-                                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)->generate($ajar->qrcode->code) !!}
-                                </div>
-                            @else
-                                <form action="{{ route('guru.qrcode.generate') }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    <input type="hidden" name="ajar_id" value="{{ $ajar->id }}">
-                                    <button type="submit" class="btn btn-primary btn-sm">Generate QR</button>
-                                </form>
-                            @endif
-                        </td>
+                        <th>Mata Pelajaran</th>
+                        <th>Kelas</th>
+                        <th>Jurusan</th>
+                        <th>Jam Awal</th>
+                        <th>Jam Akhir</th>
+                        <th>Aksi</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($ajars as $ajar)
+                        <tr>
+                            <td>{{ $ajar->mapel->nama_mapel ?? 'N/A' }}</td>
+                            <td>{{ $ajar->kelas->kelas ?? 'N/A' }}</td>
+                            <td>{{ $ajar->jurusan->jurusan ?? 'N/A' }}</td>
+                            <td>{{ $ajar->jam_awal }}</td>
+                            <td>{{ $ajar->jam_akhir }}</td>
+                            <td>
+                                @if($ajar->qrcode)
+                                    <div class="card p-2">
+                                        <h6>Kode: {{ $ajar->qrcode->code }}</h6>
+                                        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)->generate($ajar->qrcode->code) !!}
+                                    </div>
+                                @else
+                                    <form action="{{ route('guru.qrcode.generate') }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        <input type="hidden" name="ajar_id" value="{{ $ajar->id }}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Generate QR</button>
+                                    </form>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     @else
         <p>Tidak ada jadwal mengajar.</p>
     @endif
