@@ -50,6 +50,11 @@ return [
             'driver' => 'session',
             'provider' => 'gurus',
         ],
+
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
     ],
 
     'providers' => [

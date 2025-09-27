@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call(GuruSiswaSeeder::class);
+        $this->call(AdminSettingsSeeder::class);
     }
 }

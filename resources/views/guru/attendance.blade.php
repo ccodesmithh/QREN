@@ -68,6 +68,7 @@
                                 <th>NISN</th>
                                 <th>Nama Siswa</th>
                                 <th>Status</th>
+                                <th>Radius (m)</th>
                                 <th>Waktu Scan</th>
                             </tr>
                         </thead>
@@ -77,6 +78,7 @@
                                     <td>{{ $attendance->siswa->nisn }}</td>
                                     <td>{{ $attendance->siswa->name }}</td>
                                     <td>{{ $attendance->status }}</td>
+                                    <td>{{ $attendance->distance ? number_format($attendance->distance, 2) : '-' }}</td>
                                     <td>{{ $attendance->scanned_at ? $attendance->scanned_at->format('d/m/Y H:i') : 'Manual' }}</td>
                                 </tr>
                             @endforeach

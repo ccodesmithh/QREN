@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>QREN - Siswa Login</title>
+    <title>QREN - Admin Login</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -16,7 +16,7 @@
 
     <style>
         .bg-login-image {
-            background: url("{{ asset('img/undraw_profile.svg') }}");
+            background: url("{{ asset('img/undraw_rocket.svg') }}");
             background-position: center;
             background-size: cover;
         }
@@ -40,15 +40,15 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Student!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
-                                    <form class="user" method="POST" action="{{ route('siswa.login') }}">
+                                    <form class="user" method="POST" action="{{ route('admin.login') }}">
                                         @csrf
                                         <div class="form-group">
-                                            <input type="text" class="form-control form-control-user @error('nisn') is-invalid @enderror"
-                                                id="nisn" name="nisn" value="{{ old('nisn') }}" required autofocus
-                                                placeholder="Enter NISN...">
-                                            @error('nisn')
+                                            <input type="text" class="form-control form-control-user @error('name') is-invalid @enderror"
+                                                id="name" name="name" value="{{ old('name') }}" required autofocus
+                                                placeholder="Enter Name...">
+                                            @error('name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

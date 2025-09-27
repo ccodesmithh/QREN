@@ -15,6 +15,8 @@ class QrCode extends Model
         'code',
         'guru_id',
         'ajar_id',
+        'teacher_lat',
+        'teacher_lng',
     ];
 
     public function guru()

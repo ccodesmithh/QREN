@@ -24,6 +24,8 @@ class QrCodeController extends Controller
         $guru = auth()->guard('guru')->user();
         $request->validate([
             'ajar_id' => 'required|exists:ajars,id',
+            'teacher_lat' => 'required|numeric',
+            'teacher_lng' => 'required|numeric',
         ]);
 
         $ajar = Ajar::find($request->ajar_id);
@@ -38,13 +40,19 @@ class QrCodeController extends Controller
 
         if ($qr) {
             // update kode lama
-            $qr->update(['code' => $code]);
+            $qr->update([
+                'code' => $code,
+                'teacher_lat' => $request->teacher_lat,
+                'teacher_lng' => $request->teacher_lng,
+            ]);
         } else {
             // buat baru
             $qr = QrCode::create([
                 'guru_id' => $guru->id,
                 'ajar_id' => $request->ajar_id,
                 'code'    => $code,
+                'teacher_lat' => $request->teacher_lat,
+                'teacher_lng' => $request->teacher_lng,
             ]);
         }
 

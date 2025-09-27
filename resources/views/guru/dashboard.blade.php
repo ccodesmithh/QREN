@@ -70,5 +70,42 @@
             @endif
         </div>
     </div>
+
+    <!-- Recent Attendances -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Absensi Terbaru</h5>
+        </div>
+        <div class="card-body">
+            @if($recentAttendances->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nama Siswa</th>
+                                <th>Mata Pelajaran</th>
+                                <th>Status</th>
+                                <th>Radius (m)</th>
+                                <th>Scanned At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recentAttendances as $attendance)
+                                <tr>
+                                    <td>{{ $attendance->siswa->name }}</td>
+                                    <td>{{ $attendance->qrcode->ajar->mapel->nama_mapel }}</td>
+                                    <td>{{ $attendance->status }}</td>
+                                    <td>{{ $attendance->distance ? number_format($attendance->distance, 2) : '-' }}</td>
+                                    <td>{{ $attendance->scanned_at ? $attendance->scanned_at->format('d/m/Y H:i') : '-' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <p>Belum ada absensi terbaru.</p>
+            @endif
+        </div>
+    </div>
 </div>
 @endsection

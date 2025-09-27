@@ -12,6 +12,11 @@
             <span>QR</span></a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="{{ route('guru.history') }}">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>History</span></a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="{{ route('guru.profile') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>
@@ -60,16 +65,37 @@
                                         <div class="qr-wrapper">
                                             {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)->generate($ajar->qrcode->code) !!}
                                         </div>
-                                        <button class="btn btn-sm btn-success mt-2" onclick="openFullscreen('{{ $ajar->qrcode->code }}')">
+                                        <div id="qr-full-{{ $ajar->id }}" style="display: none;">{!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(400)->generate($ajar->qrcode->code) !!}</div>
+                                        <button class="btn btn-sm btn-success mt-2" onclick="openFullscreen({{ $ajar->id }})">
                                             Fullscreen
                                         </button>
                                     </div>
                                 @else
-                                    <form action="{{ route('guru.qrcode.generate') }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        <input type="hidden" name="ajar_id" value="{{ $ajar->id }}">
-                                        <button type="submit" class="btn btn-primary btn-sm">Generate QR</button>
-                                    </form>
+                                    <div id="location-section-{{ $ajar->id }}">
+                                        <button type="button" class="btn btn-warning btn-sm" onclick="enableLocation({{ $ajar->id }})">Aktifkan Lokasi</button>
+                                        <p id="location-status-{{ $ajar->id }}" class="text-muted small mt-1">Lokasi belum diaktifkan</p>
+                                        <div id="manual-location-{{ $ajar->id }}" class="mt-3" style="display: none;">
+                                            <label class="form-label">Masukkan Koordinat Manual (untuk testing desktop):</label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="number" step="any" id="manual-lat-{{ $ajar->id }}" class="form-control" placeholder="Latitude (contoh: -6.2088)">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="number" step="any" id="manual-lng-{{ $ajar->id }}" class="form-control" placeholder="Longitude (contoh: 106.8456)">
+                                                </div>
+                                            </div>
+                                            <button type="button" onclick="useManualLocation({{ $ajar->id }})" class="btn btn-secondary mt-2">Gunakan Koordinat Ini</button>
+                                        </div>
+                                    </div>
+                                    <div id="generate-section-{{ $ajar->id }}" style="display: none;">
+                                        <form action="{{ route('guru.qrcode.generate') }}" method="POST" style="display:inline;" id="form-{{ $ajar->id }}">
+                                            @csrf
+                                            <input type="hidden" name="ajar_id" value="{{ $ajar->id }}">
+                                            <input type="hidden" name="teacher_lat" id="lat-{{ $ajar->id }}">
+                                            <input type="hidden" name="teacher_lng" id="lng-{{ $ajar->id }}">
+                                            <button type="submit" class="btn btn-primary btn-sm">Generate QR</button>
+                                        </form>
+                                    </div>
                                 @endif
                             </td>
                         </tr>
@@ -116,14 +142,49 @@
 </style>
 
 <script>
-function openFullscreen(code) {
+function openFullscreen(id) {
     let qrContainer = document.getElementById('fullscreenQR');
-    qrContainer.innerHTML = `{!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(400)->generate('__CODE__') !!}`.replace('__CODE__', code);
+    qrContainer.innerHTML = document.getElementById('qr-full-' + id).innerHTML;
     document.getElementById('fullscreenOverlay').style.display = 'flex';
 }
 
 function closeFullscreen() {
     document.getElementById('fullscreenOverlay').style.display = 'none';
+}
+
+function enableLocation(ajarId) {
+    if (navigator.geolocation) {
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        };
+        navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById('lat-' + ajarId).value = position.coords.latitude;
+            document.getElementById('lng-' + ajarId).value = position.coords.longitude;
+            document.getElementById('location-status-' + ajarId).innerText = 'Lokasi berhasil diaktifkan';
+            document.getElementById('location-section-' + ajarId).style.display = 'none';
+            document.getElementById('generate-section-' + ajarId).style.display = 'block';
+        }, function(error) {
+            let message = 'Error getting location: ';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message += 'Izin lokasi ditolak. Silakan izinkan akses lokasi di browser Anda.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message += 'Lokasi tidak tersedia. Pastikan GPS atau layanan lokasi diaktifkan.';
+                    break;
+                case error.TIMEOUT:
+                    message += 'Waktu habis mendapatkan lokasi. Coba lagi.';
+                    break;
+                default:
+                    message += error.message;
+            }
+            alert(message);
+        }, options);
+    } else {
+        alert('Geolocation tidak didukung oleh browser ini.');
+    }
 }
 </script>
 

@@ -39,6 +39,7 @@
                         <th>Mata Pelajaran</th>
                         <th>Jam Awal - Akhir</th>
                         <th>Status</th>
+                        <th>Radius (m)</th>
                         <th>Scanned At</th>
                     </tr>
                 </thead>
@@ -50,6 +51,7 @@
                         <td>{{ $attendance->qrcode->ajar->mapel->nama_mapel ?? '-' }}</td>
                         <td>{{ $attendance->qrcode->ajar->jam_awal ?? '-' }} - {{ $attendance->qrcode->ajar->jam_akhir ?? '-' }}</td>
                         <td>{{ $attendance->status }}</td>
+                        <td>{{ $attendance->distance ? number_format($attendance->distance, 2) : '-' }}</td>
                         <td>{{ $attendance->scanned_at ? $attendance->scanned_at->format('d-m-Y H:i:s') : '-' }}</td>
                     </tr>
                     @endforeach

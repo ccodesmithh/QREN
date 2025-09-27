@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\QrCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
@@ -17,14 +18,15 @@ class AttendanceController extends Controller
     public function scan(Request $request)
     {
         $request->validate([
-            'siswa_id' => 'required|integer',
             'code' => 'required|string',
-            'status' => 'nullable|in:hadir,izin,alpha',
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
         ]);
 
-        $siswaId = $request->siswa_id;
+        $siswaId = auth('siswa')->id();
         $code = $request->code;
-        $status = $request->status ?? 'hadir';
+        $studentLat = $request->lat;
+        $studentLng = $request->lng;
 
         // Cari QR code di database
         $qr = QrCode::where('code', $code)->first();
@@ -33,18 +35,31 @@ class AttendanceController extends Controller
             return response()->json(['message' => 'QR Code tidak valid'], 400);
         }
 
+        // Check if teacher location is set
+        if (!$qr->teacher_lat || !$qr->teacher_lng) {
+            return response()->json(['message' => 'Lokasi guru belum diatur untuk QR ini'], 400);
+        }
+
+        // Calculate distance using Haversine formula
+        $distance = $this->calculateDistance($studentLat, $studentLng, $qr->teacher_lat, $qr->teacher_lng);
+
+        // Determine status: if distance > 50m, alpha, else hadir
+        $status = $distance > 50 ? 'alpha' : 'hadir';
+
         try {
             Attendance::create([
                 'siswa_id'   => $siswaId,
                 'guru_id'    => $qr->guru_id,
                 'qrcode_id'  => $qr->id,
                 'status'     => $status,
+                'distance'   => $distance,
                 'scanned_at' => now(),
             ]);
 
             $ajar = $qr->ajar;
+            $message = $status === 'hadir' ? 'Absensi berhasil dicatat' : 'Radius terlalu jauh, absensi dicatat sebagai alpha';
             return response()->json([
-                'message' => 'Absensi berhasil dicatat',
+                'message' => $message,
                 'ajar' => [
                     'guru_name' => $ajar->guru->name ?? 'N/A',
                     'mapel_name' => $ajar->mapel->nama_mapel ?? 'N/A',
@@ -60,6 +75,21 @@ class AttendanceController extends Controller
                 'error'   => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function calculateDistance($lat1, $lng1, $lat2, $lng2)
+    {
+        $earthRadius = 6371000; // in meters
+
+        $latDelta = deg2rad($lat2 - $lat1);
+        $lngDelta = deg2rad($lng2 - $lng1);
+
+        $a = sin($latDelta / 2) * sin($latDelta / 2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($lngDelta / 2) * sin($lngDelta / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 
     public function history()
@@ -155,6 +185,14 @@ class AttendanceController extends Controller
             });
         }
 
+        if ($request->filled('start_date')) {
+            $query->whereDate('scanned_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('scanned_at', '<=', $request->end_date);
+        }
+
         $attendances = $query->latest('scanned_at')->get();
 
         // Group by kelas then by jurusan then by date
@@ -175,6 +213,15 @@ class AttendanceController extends Controller
         $jurusans = \App\Models\Jurusan::all();
 
         return view('guru.history', compact('grouped', 'kelas', 'jurusans', 'request'));
+    }
+
+    public function exportAttendance(Request $request)
+    {
+        $guruId = auth('guru')->id();
+
+        $filters = $request->only(['kelas_id', 'jurusan_id', 'nama_siswa', 'start_date', 'end_date', 'selected_dates']);
+
+        return Excel::download(new \App\Exports\AttendanceExport($filters, $guruId), 'attendance_export.xlsx');
     }
 
     // public function store(Request $request)

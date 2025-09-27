@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class jurusan extends Model
 {
     protected $table = 'jurusans';
-    protected $primaryKey = 'id'; 
-
+    protected $primaryKey = 'id';
+    protected $fillable = ['jurusan'];
 
     public function siswas()
     {

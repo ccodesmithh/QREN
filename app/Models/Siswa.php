@@ -14,6 +14,8 @@ class Siswa extends Authenticatable
         'nisn',
         'password',
         'name',
+        'kelas_id',
+        'jurusan_id',
     ];
 
     //  override biar password kagak di-hash otomatis
