@@ -29,6 +29,6 @@ class QrCode extends Model
 
     public function attendances()
     {
-        return $this->hasMany(Attendance::class, 'qr_code_id');
+        return $this->hasMany(Attendance::class, 'qrcode_id');
     }
 }

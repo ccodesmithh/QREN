@@ -12,6 +12,11 @@
             <span>QR</span></a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="{{ route('guru.history') }}">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>History</span></a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="{{ route('guru.profile') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>

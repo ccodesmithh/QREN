@@ -38,6 +38,6 @@ class Attendance extends Model
     // Relasi ke QR Code
     public function qrcode()
     {
-        return $this->belongsTo(QRCode::class, 'qrcode_id');
+        return $this->belongsTo(QrCode::class, 'qrcode_id');
     }
 }

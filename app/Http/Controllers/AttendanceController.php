@@ -16,8 +16,15 @@ class AttendanceController extends Controller
 
     public function scan(Request $request)
     {
+        $request->validate([
+            'siswa_id' => 'required|integer',
+            'code' => 'required|string',
+            'status' => 'nullable|in:hadir,izin,alpha',
+        ]);
+
         $siswaId = $request->siswa_id;
         $code = $request->code;
+        $status = $request->status ?? 'hadir';
 
         // Cari QR code di database
         $qr = QrCode::where('code', $code)->first();
@@ -31,7 +38,7 @@ class AttendanceController extends Controller
                 'siswa_id'   => $siswaId,
                 'guru_id'    => $qr->guru_id,
                 'qrcode_id'  => $qr->id,
-                'status'     => 'hadir',
+                'status'     => $status,
                 'scanned_at' => now(),
             ]);
 
@@ -85,6 +92,7 @@ class AttendanceController extends Controller
     {
         $request->validate([
             'nisn' => 'required|string',
+            'status' => 'required|in:hadir,izin,alpha',
         ]);
 
         $ajar = \App\Models\Ajar::findOrFail($ajarId);
@@ -114,11 +122,59 @@ class AttendanceController extends Controller
             'siswa_id' => $siswa->id,
             'guru_id' => $ajar->guru_id,
             'qrcode_id' => $qrcode->id,
-            'status' => 'hadir',
+            'status' => $request->status,
             'scanned_at' => now(),
         ]);
 
         return back()->with('success', 'Absensi berhasil ditambahkan untuk ' . $siswa->name);
+    }
+
+    public function guruHistory(Request $request)
+    {
+        $guruId = auth('guru')->id();
+
+        $query = Attendance::with(['siswa.kelas', 'siswa.jurusan', 'qrcode.ajar.kelas', 'qrcode.ajar.jurusan', 'qrcode.ajar.mapel'])
+            ->where('guru_id', $guruId);
+
+        // Filters
+        if ($request->filled('kelas_id')) {
+            $query->whereHas('qrcode.ajar', function($q) use ($request) {
+                $q->where('kelas_id', $request->kelas_id);
+            });
+        }
+
+        if ($request->filled('jurusan_id')) {
+            $query->whereHas('qrcode.ajar', function($q) use ($request) {
+                $q->where('jurusan_id', $request->jurusan_id);
+            });
+        }
+
+        if ($request->filled('nama_siswa')) {
+            $query->whereHas('siswa', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->nama_siswa . '%');
+            });
+        }
+
+        $attendances = $query->latest('scanned_at')->get();
+
+        // Group by kelas then by jurusan then by date
+        $grouped = $attendances->groupBy(function($att) {
+            return $att->qrcode->ajar->kelas->kelas ?? 'Unknown';
+        })->map(function($byKelas) {
+            return $byKelas->groupBy(function($att) {
+                return $att->qrcode->ajar->jurusan->jurusan ?? 'Unknown';
+            })->map(function($byJurusan) {
+                return $byJurusan->groupBy(function($att) {
+                    return $att->scanned_at ? $att->scanned_at->format('Y-m-d') : 'Unknown';
+                });
+            });
+        });
+
+        // Get all kelas and jurusan for filters
+        $kelas = \App\Models\Kelas::all();
+        $jurusans = \App\Models\Jurusan::all();
+
+        return view('guru.history', compact('grouped', 'kelas', 'jurusans', 'request'));
     }
 
     // public function store(Request $request)

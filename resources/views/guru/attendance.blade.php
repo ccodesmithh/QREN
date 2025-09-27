@@ -41,6 +41,14 @@
                     <label for="nisn">NISN Siswa</label>
                     <input type="text" class="form-control" id="nisn" name="nisn" required>
                 </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="hadir">Hadir</option>
+                        <option value="izin">Izin</option>
+                        <option value="alpha">Alpha</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn btn-primary">Tambah Absensi</button>
             </form>
         </div>

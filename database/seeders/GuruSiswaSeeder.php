@@ -18,7 +18,7 @@ class GuruSiswaSeeder extends Seeder
 
         // Buat kelas
         $kelasId = DB::table('kelas')->insertGetId([
-            'kelas' => 'XII RPL 1',
+            'kelas' => 'XI A',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
