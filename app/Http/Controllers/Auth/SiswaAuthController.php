@@ -15,7 +15,7 @@ class SiswaAuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::guard('siswa')->check()) {
-            return redirect()->route('scan.index');
+            return redirect()->route('siswa.scan.index');
         }
         return view('siswa.login');
     }
@@ -29,7 +29,7 @@ class SiswaAuthController extends Controller
 
         if ($siswa && $siswa->password === $credentials['password']) {
             Auth::guard('siswa')->login($siswa);
-            return redirect()->route(route: 'scan.index');
+            return redirect()->route('siswa.scan.index');
         }
 
         return back()->withErrors(['login' => 'NISN atau Password salah.']);

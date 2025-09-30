@@ -13,7 +13,7 @@ class GuruSiswaSeeder extends Seeder
         $jurusan = DB::table('jurusans')->where('jurusan', 'Teknik Informatika')->first();
         if (!$jurusan) {
             $jurusanId = DB::table('jurusans')->insertGetId([
-                'jurusan' => 'Teknik Informatika',
+                'jurusan' => 'Rekayasa Perangkat Lunak',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

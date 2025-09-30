@@ -14,5 +14,11 @@ class ProfileSiswaController extends Controller
         return view('siswa.profile', compact('siswa'));
     }
 
+    public function edit()
+    {
+        return $this->index();
+    }
+
+
     
 }

@@ -92,11 +92,18 @@ class AttendanceController extends Controller
         return $earthRadius * $c;
     }
 
-    public function history()
+    public function siswaHistory()
     {
-        $attendances = Attendance::with(['siswa', 'guru', 'qrcode.ajar'])->latest()->get();
+        $attendances = Attendance::with(['siswa', 'guru', 'qrcode.ajar'])->where('siswa_id', auth('siswa')->id())->latest()->get();
 
-        return view('siswa.history', compact('attendances'));
+        // Fetch journals for the attendances
+        $ajarIds = $attendances->pluck('qrcode.ajar.id')->unique();
+        $dates = $attendances->pluck('scanned_at')->filter()->map->toDateString()->unique();
+        $journals = \App\Models\Journal::whereIn('ajar_id', $ajarIds)->whereIn('date', $dates)->get()->keyBy(function($j) {
+            return $j->ajar_id . '-' . $j->date->toDateString();
+        });
+
+        return view('siswa.history', compact('attendances', 'journals'));
     }
 
     public function attendanceByAjar($ajarId)
@@ -208,11 +215,17 @@ class AttendanceController extends Controller
             });
         });
 
+        // Fetch journals for the guru on the dates of attendances
+        $dates = $attendances->pluck('scanned_at')->filter()->map->toDateString()->unique();
+        $journals = \App\Models\Journal::where('guru_id', $guruId)->whereIn('date', $dates)->get()->keyBy(function($j) {
+            return $j->ajar_id . '-' . $j->date->toDateString();
+        });
+
         // Get all kelas and jurusan for filters
         $kelas = \App\Models\Kelas::all();
         $jurusans = \App\Models\Jurusan::all();
 
-        return view('guru.history', compact('grouped', 'kelas', 'jurusans', 'request'));
+        return view('guru.history', compact('grouped', 'kelas', 'jurusans', 'request', 'journals'));
     }
 
     public function exportAttendance(Request $request)
@@ -222,6 +235,15 @@ class AttendanceController extends Controller
         $filters = $request->only(['kelas_id', 'jurusan_id', 'nama_siswa', 'start_date', 'end_date', 'selected_dates']);
 
         return Excel::download(new \App\Exports\AttendanceExport($filters, $guruId), 'attendance_export.xlsx');
+    }
+
+    public function downloadHistory(Request $request)
+    {
+        $guruId = auth('guru')->id();
+
+        $filters = $request->only(['kelas_id', 'jurusan_id', 'nama_siswa', 'start_date', 'end_date', 'selected_dates']);
+
+        return Excel::download(new \App\Exports\AttendanceExport($filters, $guruId), 'attendance_history.xlsx');
     }
 
     // public function store(Request $request)
@@ -245,4 +267,22 @@ class AttendanceController extends Controller
     //         ], 500);
     //     }
     // }
+
+    public function guruAttendance()
+    {
+        $guruId = auth('guru')->id();
+
+        $ajar = \App\Models\Ajar::with('mapel', 'kelas', 'jurusan')->where('guru_id', $guruId)->first();
+
+        if (!$ajar) {
+            abort(404, 'Tidak ada jadwal mengajar ditemukan untuk guru ini.');
+        }
+
+        $attendances = Attendance::with(['siswa', 'qrcode.ajar'])
+            ->where('guru_id', $guruId)
+            ->latest()
+            ->get();
+
+        return view('guru.attendance', compact('ajar', 'attendances'));
+    }
 }

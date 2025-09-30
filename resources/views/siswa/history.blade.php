@@ -17,7 +17,7 @@
             <span>Profil</span></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('scan.index') }}">
+        <a class="nav-link" href="{{ route('siswa.scan.index') }}">
             <i class="fas fa-fw fa-camera"></i>
             <span>Scan</span></a>
     </li>
@@ -41,6 +41,7 @@
                         <th>Status</th>
                         <th>Radius (m)</th>
                         <th>Scanned At</th>
+                        <th>Journal</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,6 +54,12 @@
                         <td>{{ $attendance->status }}</td>
                         <td>{{ $attendance->distance ? number_format($attendance->distance, 2) : '-' }}</td>
                         <td>{{ $attendance->scanned_at ? $attendance->scanned_at->format('d-m-Y H:i:s') : '-' }}</td>
+                        <td>
+                            @php
+                                $key = $attendance->qrcode->ajar->id . '-' . ($attendance->scanned_at ? $attendance->scanned_at->toDateString() : '');
+                            @endphp
+                            {{ $journals->has($key) ? $journals[$key]->content : '-' }}
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

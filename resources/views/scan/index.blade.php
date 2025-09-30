@@ -175,7 +175,7 @@
         function sendScanData(payload) {
             appendDebug('Sending data: ' + JSON.stringify(payload));
 
-            fetch('{{ route("scan.submit") }}', {
+            fetch('{{ route("siswa.scan.submit") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

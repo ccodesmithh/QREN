@@ -17,6 +17,11 @@
             <span>History</span></a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="{{ route('guru.journal.index') }}">
+            <i class="fas fa-fw fa-book-open"></i>
+            <span>Journal</span></a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="{{ route('guru.profile') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>
@@ -59,6 +64,7 @@
                                     <td>{{ $ajar->jam_awal }} - {{ $ajar->jam_akhir }}</td>
                                     <td>
                                         <a href="{{ route('guru.attendance', $ajar->id) }}" class="btn btn-primary btn-sm">Lihat Absensi</a>
+                                        <a href="{{ route('guru.journal.create', ['ajar_id' => $ajar->id]) }}" class="btn btn-success btn-sm ml-2">Buat Journal</a>
                                     </td>
                                 </tr>
                             @endforeach

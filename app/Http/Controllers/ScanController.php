@@ -14,7 +14,7 @@ class ScanController extends Controller
         return view('scan.index');
     }
 
-    public function store(Request $request)
+    public function scan(Request $request)
     {
         $request->validate([
             'code' => 'required|string',

@@ -17,6 +17,12 @@
             <span>History</span></a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="{{ route('guru.journal.index') }}">
+            <i class="fas fa-fw fa-book-open"></i>
+            <span>Journal</span></a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" href="{{ route('guru.profile') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>
@@ -30,13 +36,14 @@
 
 @section('content')
 <div class="container">
-    <h1>QREN Generator</h1>
+    <h1>QR Generator</h1>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <h3>Jadwal Mengajar</h3>
+    <!--<h3>Jadwal Mengajar</h3>-->
+    <p class="text-danger">QREN menggunakan teknologi Geolocation, dan mencatat lokasi anda pada saat mengklik tombol "Generate QR".<br>Harap untuk generate QR CODE pada area sekolah.</p>
     @if($ajars->count() > 0)
         <div class="table-responsive">
             <table class="table">

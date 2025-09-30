@@ -17,6 +17,12 @@
             <span>History</span></a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="{{ route('guru.journal.index') }}">
+            <i class="fas fa-fw fa-book-open"></i>
+            <span>Journal</span></a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" href="{{ route('guru.profile') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Profil</span></a>
@@ -149,6 +155,14 @@
                                                             </div>
                                                             <div id="collapse-date-{{ $kelasId }}-{{ $jurusanId }}-{{ $dateCounter }}" class="collapse" aria-labelledby="heading-date-{{ $kelasId }}-{{ $jurusanId }}-{{ $dateCounter }}" data-parent="#dateAccordion-{{ $kelasId }}-{{ $jurusanId }}">
                                                                 <div class="card-body">
+                                                                    @if($journals->has($dateString))
+                                                                    <div class="mb-3">
+                                                                        <h5>Jurnal:</h5>
+                                                                        @foreach($journals[$dateString] as $journal)
+                                                                        <p><strong>{{ $journal->ajar->mapel->nama_mapel ?? 'Unknown' }}:</strong> {{ $journal->content }}</p>
+                                                                        @endforeach
+                                                                    </div>
+                                                                    @endif
                                                                     <div class="table-responsive">
                                                                         <table class="table table-bordered">
                                                                             <thead>
@@ -160,6 +174,7 @@
                                                                                     <th>Status</th>
                                                                                     <th>Radius (m)</th>
                                                                                     <th>Scanned At</th>
+                                                                                    <th>Jurnal</th>
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
@@ -172,6 +187,17 @@
                                                                                     <td>{{ $attendance->status }}</td>
                                                                                     <td>{{ $attendance->distance ? number_format($attendance->distance, 2) : '-' }}</td>
                                                                                     <td>{{ $attendance->scanned_at ? $attendance->scanned_at->format('H:i:s') : '-' }}</td>
+                                                                                    <td>
+                                                                                        @php
+                                                                                            $journalKey = $attendance->qrcode->ajar_id . '-' . ($attendance->scanned_at ? $attendance->scanned_at->format('Y-m-d') : '');
+                                                                                            $journal = $journals[$journalKey] ?? null;
+                                                                                        @endphp
+                                                                                        @if($journal)
+                                                                                            {{ $journal->content }}
+                                                                                        @else
+                                                                                            -
+                                                                                        @endif
+                                                                                    </td>
                                                                                 </tr>
                                                                                 @endforeach
                                                                             </tbody>
