@@ -20,6 +20,11 @@ Route::get('/', function () {
     return redirect()->route('siswa.login');
 });
 
+// Fallback login route to prevent "Route [login] not defined" error
+Route::get('/login', function () {
+    return redirect()->route('siswa.login');
+})->name('login');
+
 // Guru Authentication Routes
 Route::get('/guru/login', [GuruAuthController::class, 'showLoginForm'])->name('guru.login');
 Route::post('/guru/login', [GuruAuthController::class, 'login'])->name('guru.login.submit');
@@ -33,7 +38,7 @@ Route::post('/siswa/logout', [SiswaAuthController::class, 'logout'])->name('sisw
 // Admin Authentication Routes
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
-Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+Route::get('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 // Guru Protected Routes
 Route::middleware(['auth:guru'])->prefix('guru')->name('guru.')->group(function () {
