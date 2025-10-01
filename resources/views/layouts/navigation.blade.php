@@ -54,7 +54,7 @@
                         </x-slot>
                     </x-dropdown>
                 @else
-                    
+
                     <a href="{{ route('guru.login') }}" class="text-gray-600 hover:text-gray-800 px-3">
                         Login Guru
                     </a>

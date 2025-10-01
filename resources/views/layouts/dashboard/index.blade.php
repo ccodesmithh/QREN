@@ -8,6 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="user-id" content="{{ auth()->check() ? auth()->id() : "" }}">
+
+    <script>
+        window.Laravel = {
+            userId: {{ (auth('guru')->check() ? auth('guru')->id() : (auth('siswa')->check() ? auth('siswa')->id() : (auth()->check() ? auth()->id() : 'null'))) }}
+        };
+    </script>
 
     <title>QUICK RESPONSE FOR EDUCATION ATTENDANCE | DASHBOARD</title>
 
@@ -84,7 +92,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
-            <div id="content">
+            <div id="content" class="main-content-animated">
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -111,7 +119,7 @@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+
                         <li class="nav-item dropdown no-arrow d-sm-none">
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -252,7 +260,7 @@
                     @elseif(Auth::guard('guru')->check())
                         <form method="GET" action="{{ route('guru.logout') }}">
                     @else
-                        <form method="GET" action="{{ route('logout') }}">
+                        <form method="GET" action="{{ route('admin.logout') }}">
                     @csrf
                     @endif
                             <button type="submit" class="btn btn-danger">Logout</button>
@@ -290,11 +298,36 @@
     <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
 
+
+
     <!-- Page level custom scripts -->
     <script src="{{asset('js/demo/datatables-demo.js')}}"></script>
 
- 
+    <!-- Vite compiled assets -->
+    @vite(['resources/js/app.js'])
 
+    <!-- Livewire Scripts -->
+    @livewireScripts
+
+        <!-- Anime.js for global animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Global fade-in animation for main content
+            // This targets the entire content area for a smooth page load effect.
+            if (document.querySelector('.main-content-animated')) {
+                anime({
+                    targets: '.main-content-animated',
+                    opacity: [0, 1],
+                    translateY: [15, 0],
+                    duration: 500,
+                    easing: 'easeOutExpo'
+                });
+            }
+        });
+    </script>
+
+    @stack('scripts')
 </body>
 
 </html>

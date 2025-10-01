@@ -20,20 +20,27 @@ Route::get('/', function () {
     return redirect()->route('siswa.login');
 });
 
+// Fallback login route to prevent "Route [login] not defined" error
+Route::get('/login', function () {
+    return redirect()->route('siswa.login');
+})->name('login');
+
 // Guru Authentication Routes
 Route::get('/guru/login', [GuruAuthController::class, 'showLoginForm'])->name('guru.login');
 Route::post('/guru/login', [GuruAuthController::class, 'login'])->name('guru.login.submit');
-Route::post('/guru/logout', [GuruAuthController::class, 'logout'])->name('guru.logout');
+Route::get('/guru/logout', [GuruAuthController::class, 'logout'])->name('guru.logout');
 
 // Siswa Authentication Routes
 Route::get('/siswa/login', [SiswaAuthController::class, 'showLoginForm'])->name('siswa.login');
 Route::post('/siswa/login', [SiswaAuthController::class, 'login'])->name('siswa.login.submit');
-Route::post('/siswa/logout', [SiswaAuthController::class, 'logout'])->name('siswa.logout');
+Route::get('/siswa/logout', [SiswaAuthController::class, 'logout'])->name('siswa.logout');
 
 // Admin Authentication Routes
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
-Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+Route::get('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+
 
 // Guru Protected Routes
 Route::middleware(['auth:guru'])->prefix('guru')->name('guru.')->group(function () {
@@ -42,6 +49,9 @@ Route::middleware(['auth:guru'])->prefix('guru')->name('guru.')->group(function 
     Route::get('/qrcode/create', [QrCodeController::class, 'create'])->name('qrcode.create');
     Route::post('/qrcode', [QrCodeController::class, 'store'])->name('qrcode.store');
     Route::get('/qrcode/{qrcode}', [QrCodeController::class, 'show'])->name('qrcode.show');
+
+    Route::post('/qrcode/generate', [QrCodeController::class, 'generate'])->name('qrcode.generate');
+    Route::get('/qrcode/svg', [QrCodeController::class, 'getQrCodeSvg'])->name('qrcode.svg');
     Route::get('/profile', [ProfileGuruController::class, 'edit'])->name('profile');
     Route::patch('/profile', [ProfileGuruController::class, 'update'])->name('profile.update');
     Route::get('/jadwal', [AjarController::class, 'index'])->name('jadwal');
@@ -69,6 +79,7 @@ Route::middleware(['auth:siswa'])->prefix('siswa')->name('siswa.')->group(functi
 // Admin Protected Routes
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/manage', [AdminController::class, 'manage'])->name('manage');
 
     // Siswa management
     Route::get('/siswa/create', [AdminController::class, 'createSiswa'])->name('siswa.create');
@@ -98,7 +109,17 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::patch('/jurusan/{jurusan}', [AdminController::class, 'updateJurusan'])->name('jurusan.update');
     Route::delete('/jurusan/{jurusan}', [AdminController::class, 'destroyJurusan'])->name('jurusan.destroy');
 
+    // Mapel management
+    Route::get('/mapel/create', [AdminController::class, 'createMapel'])->name('mapel.create');
+    Route::post('/mapel', [AdminController::class, 'storeMapel'])->name('mapel.store');
+    Route::get('/mapel/{mapel}/edit', [AdminController::class, 'editMapel'])->name('mapel.edit');
+    Route::patch('/mapel/{mapel}', [AdminController::class, 'updateMapel'])->name('mapel.update');
+    Route::delete('/mapel/{mapel}', [AdminController::class, 'destroyMapel'])->name('mapel.destroy');
+
     // Settings
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::patch('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
+
+    // QR Code regeneration route removed as part of cleanup
+    // Route::post('/regenerate-qr-codes', [AdminController::class, 'regenerateQrCodes'])->name('regenerate.qr-codes');
 });

@@ -9,9 +9,56 @@ use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\jurusan;
 use App\Models\Attendance;
+use App\Models\QrCode;
+use App\Models\Mapel;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    public function manage(Request $request)
+    {
+        $settings = [
+            'radius' => Setting::getValue('radius', '50'),
+            'geolocation_timeout' => Setting::getValue('geolocation_timeout', '10000'),
+            'max_age' => Setting::getValue('max_age', '0'),
+            'enable_high_accuracy' => Setting::getValue('enable_high_accuracy', 'true'),
+            'scan_cooldown' => Setting::getValue('scan_cooldown', '10'),
+        ];
+
+        $siswaQuery = Siswa::with('kelas', 'jurusan');
+
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $siswaQuery->where(function($q) use ($search) {
+                $q->where('nisn', 'like', '%' . $search . '%')
+                  ->orWhere('name', 'like', '%' . $search . '%')
+                  ->orWhereHas('kelas', function($kq) use ($search) {
+                      $kq->where('kelas', 'like', '%' . $search . '%');
+                  })
+                  ->orWhereHas('jurusan', function($jq) use ($search) {
+                      $jq->where('jurusan', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        if ($request->has('kelas_id') && $request->kelas_id) {
+            $siswaQuery->where('kelas_id', $request->kelas_id);
+        }
+
+        if ($request->has('jurusan_id') && $request->jurusan_id) {
+            $siswaQuery->where('jurusan_id', $request->jurusan_id);
+        }
+
+        $siswas = $siswaQuery->get();
+        $gurus = Guru::all();
+        $kelas = Kelas::all();
+        $jurusans = jurusan::all();
+        $attendances = Attendance::with('siswa', 'ajar')->get();
+        $mapels = Mapel::all();
+
+        return view('admin.manage', compact('settings', 'siswas', 'gurus', 'kelas', 'jurusans', 'attendances', 'request', 'mapels'));
+    }
+
     public function index(Request $request)
     {
         $settings = [
@@ -55,7 +102,7 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('settings', 'siswas', 'gurus', 'kelas', 'jurusans', 'attendances', 'request'));
     }
 
-    public function update(Request $request)
+    public function updateSettings(Request $request)
     {
         $request->validate([
             'radius' => 'required|numeric|min:0',
@@ -237,4 +284,63 @@ class AdminController extends Controller
         $jurusan->delete();
         return redirect()->route('admin.dashboard')->with('success', 'Jurusan deleted successfully.');
     }
+
+    public function createMapel()
+    {
+        return view('admin.mapel.create');
+    }
+
+    public function storeMapel(Request $request)
+    {
+        $request->validate([
+            'nama_mapel' => 'required|unique:mapels',
+        ]);
+
+        Mapel::create($request->all());
+        return redirect()->route('admin.mapel.index')->with('success', 'Mata Pelajaran created successfully.');
+    }
+
+    public function editMapel(Mapel $mapel)
+    {
+        return view('admin.mapel.edit', compact('mapel'));
+    }
+
+    public function updateMapel(Request $request, Mapel $mapel)
+    {
+        $request->validate([
+            'nama_mapel' => 'required|unique:mapels,nama_mapel,' . $mapel->id,
+        ]);
+
+        $mapel->update($request->all());
+        return redirect()->route('admin.mapel.index')->with('success', 'Mata Pelajaran updated successfully.');
+    }
+
+    public function destroyMapel(Mapel $mapel)
+    {
+        $mapel->delete();
+        return redirect()->route('admin.mapel.index')->with('success', 'Mata Pelajaran deleted successfully.');
+    }
+
+    // Removed regenerateQrCodes method as part of cleanup
+    // public function regenerateQrCodes()
+    // {
+    //     // Get all QR codes and regenerate them, keeping existing location data
+    //     $qrCodes = QrCode::all();
+    //     $regeneratedCount = 0;
+
+    //     foreach ($qrCodes as $qr) {
+    //         $newCode = 'QREN-' . strtoupper(Str::random(8));
+    //         // Update only the code, keep existing location data
+    //         $qr->update([
+    //             'code' => $newCode,
+    //         ]);
+    //         $regeneratedCount++;
+    //     }
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => "Successfully regenerated {$regeneratedCount} QR codes",
+    //         'count' => $regeneratedCount
+    //     ]);
+    // }
 }

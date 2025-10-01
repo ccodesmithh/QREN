@@ -28,5 +28,6 @@ class AdminSettingsSeeder extends Seeder
         Setting::setValue('max_age', '0');
         Setting::setValue('enable_high_accuracy', 'true');
         Setting::setValue('scan_cooldown', '10');
+        // Removed geolocation_update_interval setting as part of cleanup
     }
 }

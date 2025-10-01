@@ -47,7 +47,7 @@ class AttendanceController extends Controller
         $status = $distance > 50 ? 'alpha' : 'hadir';
 
         try {
-            Attendance::create([
+            $attendance = Attendance::create([
                 'siswa_id'   => $siswaId,
                 'guru_id'    => $qr->guru_id,
                 'qrcode_id'  => $qr->id,
@@ -155,13 +155,15 @@ class AttendanceController extends Controller
             return back()->withErrors(['nisn' => 'Siswa ini sudah melakukan absensi.']);
         }
 
-        Attendance::create([
+        $attendance = Attendance::create([
             'siswa_id' => $siswa->id,
             'guru_id' => $ajar->guru_id,
             'qrcode_id' => $qrcode->id,
             'status' => $request->status,
             'scanned_at' => now(),
         ]);
+
+
 
         return back()->with('success', 'Absensi berhasil ditambahkan untuk ' . $siswa->name);
     }

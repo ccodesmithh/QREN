@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('qrcodes', function (Blueprint $table) {
+        Schema::table('qr_codes', function (Blueprint $table) {
             $table->foreign('ajar_id')->references('id')->on('ajars')->onDelete('cascade');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('qrcodes', function (Blueprint $table) {
+        Schema::table('qr_codes', function (Blueprint $table) {
             $table->dropForeign(['ajar_id']);
         });
     }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('siswa_id')->constrained('siswas')->onDelete('cascade');
             $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
-            $table->foreignId('qrcode_id')->constrained('qrcodes')->onDelete('cascade');
+            $table->foreignId('qrcode_id')->constrained('qr_codes')->onDelete('cascade');
             $table->enum('status', ['hadir', 'izin', 'alpha'])->default('hadir');
             $table->timestamp('scanned_at')->nullable();
             $table->timestamps(); 
