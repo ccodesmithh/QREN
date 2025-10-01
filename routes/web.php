@@ -79,6 +79,7 @@ Route::middleware(['auth:siswa'])->prefix('siswa')->name('siswa.')->group(functi
 // Admin Protected Routes
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/manage', [AdminController::class, 'manage'])->name('manage');
 
     // Siswa management
     Route::get('/siswa/create', [AdminController::class, 'createSiswa'])->name('siswa.create');
@@ -107,6 +108,13 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/jurusan/{jurusan}/edit', [AdminController::class, 'editJurusan'])->name('jurusan.edit');
     Route::patch('/jurusan/{jurusan}', [AdminController::class, 'updateJurusan'])->name('jurusan.update');
     Route::delete('/jurusan/{jurusan}', [AdminController::class, 'destroyJurusan'])->name('jurusan.destroy');
+
+    // Mapel management
+    Route::get('/mapel/create', [AdminController::class, 'createMapel'])->name('mapel.create');
+    Route::post('/mapel', [AdminController::class, 'storeMapel'])->name('mapel.store');
+    Route::get('/mapel/{mapel}/edit', [AdminController::class, 'editMapel'])->name('mapel.edit');
+    Route::patch('/mapel/{mapel}', [AdminController::class, 'updateMapel'])->name('mapel.update');
+    Route::delete('/mapel/{mapel}', [AdminController::class, 'destroyMapel'])->name('mapel.destroy');
 
     // Settings
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');

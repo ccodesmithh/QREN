@@ -92,7 +92,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
-            <div id="content">
+            <div id="content" class="main-content-animated">
 
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -309,6 +309,25 @@
     <!-- Livewire Scripts -->
     @livewireScripts
 
+        <!-- Anime.js for global animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Global fade-in animation for main content
+            // This targets the entire content area for a smooth page load effect.
+            if (document.querySelector('.main-content-animated')) {
+                anime({
+                    targets: '.main-content-animated',
+                    opacity: [0, 1],
+                    translateY: [15, 0],
+                    duration: 500,
+                    easing: 'easeOutExpo'
+                });
+            }
+        });
+    </script>
+
+    @stack('scripts')
 </body>
 
 </html>
