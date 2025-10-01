@@ -14,6 +14,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileSiswaController;
 use App\Http\Controllers\ScanController;
 use App\Http\Controllers\JournalController;
+use App\Http\Controllers\NotificationController;
 
 // Public routes
 Route::get('/', function () {
@@ -28,12 +29,12 @@ Route::get('/login', function () {
 // Guru Authentication Routes
 Route::get('/guru/login', [GuruAuthController::class, 'showLoginForm'])->name('guru.login');
 Route::post('/guru/login', [GuruAuthController::class, 'login'])->name('guru.login.submit');
-Route::post('/guru/logout', [GuruAuthController::class, 'logout'])->name('guru.logout');
+Route::get('/guru/logout', [GuruAuthController::class, 'logout'])->name('guru.logout');
 
 // Siswa Authentication Routes
 Route::get('/siswa/login', [SiswaAuthController::class, 'showLoginForm'])->name('siswa.login');
 Route::post('/siswa/login', [SiswaAuthController::class, 'login'])->name('siswa.login.submit');
-Route::post('/siswa/logout', [SiswaAuthController::class, 'logout'])->name('siswa.logout');
+Route::get('/siswa/logout', [SiswaAuthController::class, 'logout'])->name('siswa.logout');
 
 // Admin Authentication Routes
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
@@ -47,6 +48,9 @@ Route::middleware(['auth:guru'])->prefix('guru')->name('guru.')->group(function 
     Route::get('/qrcode/create', [QrCodeController::class, 'create'])->name('qrcode.create');
     Route::post('/qrcode', [QrCodeController::class, 'store'])->name('qrcode.store');
     Route::get('/qrcode/{qrcode}', [QrCodeController::class, 'show'])->name('qrcode.show');
+    Route::post('/qrcode/update-location', [QrCodeController::class, 'updateLocation'])->name('qrcode.update-location');
+    Route::post('/qrcode/generate', [QrCodeController::class, 'generate'])->name('qrcode.generate');
+    Route::get('/qrcode/svg', [QrCodeController::class, 'getQrCodeSvg'])->name('qrcode.svg');
     Route::get('/profile', [ProfileGuruController::class, 'edit'])->name('profile');
     Route::patch('/profile', [ProfileGuruController::class, 'update'])->name('profile.update');
     Route::get('/jadwal', [AjarController::class, 'index'])->name('jadwal');
@@ -59,6 +63,10 @@ Route::middleware(['auth:guru'])->prefix('guru')->name('guru.')->group(function 
 
     // Journal Routes
     Route::resource('journal', JournalController::class);
+
+    // Notification Routes
+    Route::get('/notifications/unread', [NotificationController::class, 'unread'])->name('notifications.unread');
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
 });
 
 // Siswa Protected Routes
@@ -106,4 +114,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     // Settings
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::patch('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
+
+    // QR Code regeneration
+    Route::post('/regenerate-qr-codes', [AdminController::class, 'regenerateQrCodes'])->name('regenerate.qr-codes');
 });

@@ -13,6 +13,7 @@ class GuruDashboardController extends Controller
         $guru = Auth::guard('guru')->user();
         /** @var \App\Models\Guru $guru */
         $ajars = $guru->ajars()->with('mapel', 'kelas', 'jurusan')->get();
+        $ajarsWithQr = $guru->ajars()->with('mapel', 'kelas', 'jurusan', 'qrcode')->whereHas('qrcode')->get();
         $recentAttendances = Attendance::whereHas('qrcode', function($q) use ($guru) {
             $q->where('guru_id', $guru->id);
         })->with('siswa', 'qrcode.ajar.mapel')->latest('scanned_at')->take(10)->get();
@@ -23,6 +24,6 @@ class GuruDashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('guru.dashboard', compact('guru', 'ajars', 'recentAttendances', 'recentJournals'));
+        return view('guru.dashboard', compact('guru', 'ajars', 'ajarsWithQr', 'recentAttendances', 'recentJournals'));
     }
 }

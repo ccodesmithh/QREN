@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('qr_codes', function (Blueprint $table) {
-            $table->unsignedBigInteger('ajar_id')->nullable()->after('guru_id');
+        Schema::table('journals', function (Blueprint $table) {
+            $table->time('jam_start')->nullable();
+            $table->time('jam_end')->nullable();
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('qr_codes', function (Blueprint $table) {
-            $table->dropColumn('ajar_id');
+        Schema::table('journals', function (Blueprint $table) {
+            $table->dropColumn(['jam_start', 'jam_end']);
         });
     }
 };

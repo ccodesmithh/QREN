@@ -86,6 +86,13 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('admin.settings.update') }}">
                         @csrf
+                        @method('PATCH')
+
+                        <div class="mb-3">
+                            <h6>QR Code Regeneration Countdown:</h6>
+                            <div id="qrCountdown" style="font-size: 1.5rem; font-weight: bold; color: #007bff;">Loading...</div>
+                            <button type="button" id="regenerateNowBtn" class="btn btn-sm btn-primary mt-2">Regenerate Now</button>
+                        </div>
 
                         <div class="row">
                             <div class="col-md-6">
@@ -125,6 +132,12 @@
                                 <div class="form-group mb-3">
                                     <label for="scan_cooldown">Scan Cooldown (seconds)</label>
                                     <input type="number" class="form-control" id="scan_cooldown" name="scan_cooldown" value="{{ $settings['scan_cooldown'] }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="geolocation_update_interval">Geolocation Update Interval (minutes)</label>
+                                    <input type="number" class="form-control" id="geolocation_update_interval" name="geolocation_update_interval" value="{{ $settings['geolocation_update_interval'] }}" required min="1">
                                 </div>
                             </div>
                         </div>
@@ -344,7 +357,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </di>
+                    </div>
                 </div>
             </div>
         </div>
@@ -390,6 +403,59 @@
                     settingsLink.classList.add('active');
                 }
             }
+
+            // Countdown timer for QR code regeneration
+            var countdownElement = document.getElementById('qrCountdown');
+            var regenerateBtn = document.getElementById('regenerateNowBtn');
+            var geolocationUpdateInterval = {{ $settings['geolocation_update_interval'] ?? 5 }}; // minutes
+            var timeLeft = geolocationUpdateInterval * 60; // convert to seconds
+
+            function updateCountdown() {
+                var minutes = Math.floor(timeLeft / 60);
+                var seconds = timeLeft % 60;
+                countdownElement.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ' until next QR regeneration';
+                if (timeLeft <= 0) {
+                    // Trigger regeneration event
+                    regenerateQrCode();
+                    timeLeft = geolocationUpdateInterval * 60; // reset timer
+                } else {
+                    timeLeft--;
+                }
+            }
+
+            function regenerateQrCode() {
+                // Make AJAX call to regenerate QR codes
+                fetch('{{ route("admin.regenerate.qr-codes") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('QR codes regenerated successfully:', data.message);
+                        // Show success message
+                        alert('QR codes regenerated successfully! ' + data.count + ' codes updated.');
+                    } else {
+                        console.error('Failed to regenerate QR codes:', data.error);
+                        alert('Failed to regenerate QR codes. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error regenerating QR codes:', error);
+                    alert('Error regenerating QR codes. Please check the console for details.');
+                });
+            }
+
+            regenerateBtn.addEventListener('click', function() {
+                regenerateQrCode();
+                timeLeft = geolocationUpdateInterval * 60; // reset timer on manual trigger
+            });
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
         });
     </script>
 </div>

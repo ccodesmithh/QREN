@@ -40,6 +40,8 @@ class JournalController extends Controller
         $request->validate([
             'ajar_id' => 'required|exists:ajars,id',
             'date' => 'required|date',
+            'jam_start' => 'required|date_format:H:i',
+            'jam_end' => 'required|date_format:H:i',
             'content' => 'required|string',
         ]);
 
@@ -59,6 +61,8 @@ class JournalController extends Controller
             'guru_id' => $guru->id,
             'ajar_id' => $request->ajar_id,
             'date' => $request->date,
+            'jam_start' => $request->jam_start,
+            'jam_end' => $request->jam_end,
             'content' => $request->content,
         ]);
 
@@ -89,6 +93,8 @@ class JournalController extends Controller
         $request->validate([
             'ajar_id' => 'required|exists:ajars,id',
             'date' => 'required|date',
+            'jam_start' => 'required|date_format:H:i',
+            'jam_end' => 'required|date_format:H:i',
             'content' => 'required|string',
         ]);
 
@@ -108,6 +114,8 @@ class JournalController extends Controller
         $journal->update([
             'ajar_id' => $request->ajar_id,
             'date' => $request->date,
+            'jam_start' => $request->jam_start,
+            'jam_end' => $request->jam_end,
             'content' => $request->content,
         ]);
 

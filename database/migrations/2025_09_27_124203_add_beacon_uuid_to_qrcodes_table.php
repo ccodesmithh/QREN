@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('qrcodes', function (Blueprint $table) {
+        Schema::table('qr_codes', function (Blueprint $table) {
             $table->string('beacon_uuid')->nullable()->after('teacher_lng');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('qrcodes', function (Blueprint $table) {
+        Schema::table('qr_codes', function (Blueprint $table) {
             $table->dropColumn('beacon_uuid');
         });
     }

@@ -34,11 +34,24 @@
 @endsection
 
 @section('content')
-<div class="container">
-    <h1>Halo, {{ $guru->name }}</h1>
-    <p>Selamat datang di Dashboard Guru 👨‍🏫</p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Halo, {{ $guru->name }}</h1>
+            <p>Selamat datang di Dashboard Guru 👨‍🏫</p>
+        </div>
+    </div>
 
-    <div class="card mt-4">
+    <!-- QR Codes Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Kode QR Absensi</h5>
+        </div>
+        <div class="card-body">
+            @livewire('guru-dashboard')
+        </div>
+    </div>
+
+    <div class="card mb-4">
         <div class="card-header">
             <h5>Jadwal Mengajar</h5>
         </div>
@@ -78,7 +91,7 @@
     </div>
 
     <!-- Recent Attendances -->
-    <div class="card mt-4">
+    <div class="card mb-4">
         <div class="card-header">
             <h5>Absensi Terbaru</h5>
         </div>
@@ -113,5 +126,13 @@
             @endif
         </div>
     </div>
-</div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        @if($ajarsWithQr->count() > 0)
+            // Start periodic location update for all ajars with QR codes
+            startPeriodicLocationUpdateForAll({{ $ajarsWithQr->pluck('id')->toJson() }}, {{ (int) \App\Models\Setting::getValue('geolocation_update_interval', 5) }});
+        @endif
+    });
+    </script>
 @endsection

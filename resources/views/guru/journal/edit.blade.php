@@ -47,6 +47,22 @@
         </div>
 
         <div class="form-group">
+            <label for="jam_start">Jam Mulai</label>
+            <input type="time" name="jam_start" id="jam_start" class="form-control @error('jam_start') is-invalid @enderror" value="{{ old('jam_start', $journal->jam_start ? $journal->jam_start->format('H:i') : '') }}" required>
+            @error('jam_start')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group">
+            <label for="jam_end">Jam Selesai</label>
+            <input type="time" name="jam_end" id="jam_end" class="form-control @error('jam_end') is-invalid @enderror" value="{{ old('jam_end', $journal->jam_end ? $journal->jam_end->format('H:i') : '') }}" required>
+            @error('jam_end')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group">
             <label for="content">Isi Jurnal</label>
             <textarea name="content" id="content" class="form-control @error('content') is-invalid @enderror" rows="10" placeholder="Deskripsikan pelajaran yang diberikan..." required>{{ old('content', $journal->content) }}</textarea>
             @error('content')

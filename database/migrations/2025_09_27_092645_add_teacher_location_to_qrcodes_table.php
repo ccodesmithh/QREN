@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('qrcodes', function (Blueprint $table) {
+        Schema::table('qr_codes', function (Blueprint $table) {
             $table->decimal('teacher_lat', 10, 8)->nullable()->after('code');
             $table->decimal('teacher_lng', 11, 8)->nullable()->after('teacher_lat');
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('qrcodes', function (Blueprint $table) {
+        Schema::table('qr_codes', function (Blueprint $table) {
             $table->dropColumn(['teacher_lat', 'teacher_lng']);
         });
     }

@@ -12,6 +12,11 @@ class AjarController extends Controller
         return view('guru.ajar');
     }
 
+    public function create()
+    {
+        return view('guru.ajar');
+    }
+
     public function store(Request $request)
     {
         $guruId = auth()->guard('guru')->id();

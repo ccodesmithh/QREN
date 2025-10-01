@@ -69,7 +69,7 @@
                                 @if($ajar->qrcode)
                                     <div class="card p-2 text-center">
                                         <h6>Kode: {{ $ajar->qrcode->code }}</h6>
-                                        <div class="qr-wrapper">
+                                        <div class="qr-wrapper" id="qr-code-svg-{{ $ajar->id }}">
                                             {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(150)->generate($ajar->qrcode->code) !!}
                                         </div>
                                         <div id="qr-full-{{ $ajar->id }}" style="display: none;">{!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(400)->generate($ajar->qrcode->code) !!}</div>
@@ -193,6 +193,18 @@ function enableLocation(ajarId) {
         alert('Geolocation tidak didukung oleh browser ini.');
     }
 }
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    @foreach($ajars as $ajar)
+        @if($ajar->qrcode)
+            // Start periodic location update for this ajar with interval from settings
+            startPeriodicLocationUpdate({{ $ajar->id }}, {{ (int) \App\Models\Setting::getValue('geolocation_update_interval', 5) }});
+        @endif
+    @endforeach
+});
 </script>
 
 @endsection

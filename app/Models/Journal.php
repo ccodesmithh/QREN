@@ -13,11 +13,15 @@ class Journal extends Model
         'guru_id',
         'ajar_id',
         'date',
+        'jam_start',
+        'jam_end',
         'content',
     ];
 
     protected $casts = [
         'date' => 'date',
+        'jam_start' => 'datetime:H:i',
+        'jam_end' => 'datetime:H:i',
     ];
 
     public function guru()
