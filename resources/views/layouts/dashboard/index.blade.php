@@ -119,36 +119,7 @@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-<!-- Nav Item - Notifications -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter" id="notification-count">0</span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Notifikasi
-                                </h6>
-                                <div id="notification-list">
-                                    <a class="dropdown-item d-flex align-items-center" href="#">
-                                        <div class="mr-3">
-                                            <div class="icon-circle bg-primary">
-                                                <i class="fas fa-file-alt text-white"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="small text-gray-500">Belum ada notifikasi</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Tampilkan Semua Notifikasi</a>
-                            </div>
-                        </li>
+
                         <li class="nav-item dropdown no-arrow d-sm-none">
                             <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -327,83 +298,7 @@
     <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
 
-    <!-- Notification Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Initialize notification center
-            window.notificationCenter = {
-                notifications: [],
-                unreadCount: 0,
-                addNotification(notification) {
-                    this.notifications.unshift(notification);
-                    this.unreadCount++;
-                    this.updateUI();
-                },
-                markAsRead(index) {
-                    if (!this.notifications[index].read) {
-                        this.notifications[index].read = true;
-                        this.unreadCount--;
-                        this.updateUI();
-                    }
-                },
-                updateUI() {
-                    const badge = document.getElementById("notification-count");
-                    if (badge) {
-                        badge.textContent = this.unreadCount > 0 ? this.unreadCount : "";
-                        badge.style.display = this.unreadCount > 0 ? "inline-block" : "none";
-                    }
-                    this.updateNotificationList();
-                },
-                updateNotificationList() {
-                    const list = document.getElementById("notification-list");
-                    if (!list) return;
 
-                    if (this.notifications.length === 0) {
-                        list.innerHTML = `"<a class="dropdown-item d-flex align-items-center" href="#">
-                            <div class="mr-3">
-                                <div class="icon-circle bg-primary">
-                                    <i class="fas fa-file-alt text-white"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="small text-gray-500">Belum ada notifikasi</div>
-                            </div>
-                        </a>"`;
-                        return;
-                    }
-
-                    list.innerHTML = this.notifications.slice(0, 5).map((notification, index) => `
-                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="window.notificationCenter.markAsRead(${index})">
-                            <div class="mr-3">
-                                <div class="icon-circle bg-primary">
-                                    <i class="fas fa-file-alt text-white"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="small text-gray-500">${notification.message}</div>
-                            </div>
-                        </a>
-                    `).join("");
-                }
-            };
-
-
-
-            // Start periodic location update for all QR codes if user is guru
-            @if(Auth::guard('guru')->check())
-                @php
-                    $guru = Auth::guard('guru')->user();
-                    $ajarsWithQr = $guru->ajars()->whereHas('qrcode')->with('qrcode')->get();
-                @endphp
-                @php
-                    $intervalMinutes = (int) \App\Models\Setting::getValue('geolocation_update_interval', 5);
-                @endphp
-                @foreach($ajarsWithQr as $ajar)
-                    startPeriodicLocationUpdate({{ $ajar->id }}, {{ $intervalMinutes }});
-                @endforeach
-            @endif
-        });
-    </script>
 
     <!-- Page level custom scripts -->
     <script src="{{asset('js/demo/datatables-demo.js')}}"></script>

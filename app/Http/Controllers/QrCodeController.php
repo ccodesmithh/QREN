@@ -6,7 +6,6 @@ use App\Models\QrCode;
 use App\Models\Ajar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Events\GeolocationUpdateNotification;
 
 class QrCodeController extends Controller
 {
@@ -113,60 +112,7 @@ class QrCodeController extends Controller
             ->with('qr', $qr);
     }
 
-    public function updateLocation(Request $request)
-    {
-        /** @var \App\Models\Guru $guru */
-        $guru = auth()->guard('guru')->user();
-        $request->validate([
-            'ajar_id' => 'required|exists:ajars,id',
-            'teacher_lat' => 'required|numeric',
-            'teacher_lng' => 'required|numeric',
-        ]);
 
-        $ajar = Ajar::find($request->ajar_id);
-        if ($ajar->guru_id != $guru->id) {
-            \Log::warning('Geolocation update: Unauthorized access', [
-                'guru_id' => $guru->id,
-                'ajar_id' => $request->ajar_id,
-                'ajar_guru_id' => $ajar->guru_id,
-            ]);
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
-        $qr = QrCode::where('ajar_id', $request->ajar_id)->first();
-        if (!$qr) {
-            \Log::warning('Geolocation update: QR Code not found', [
-                'ajar_id' => $request->ajar_id,
-            ]);
-            return response()->json(['error' => 'QR Code not found'], 404);
-        }
-
-        $old_lat = $qr->teacher_lat;
-        $old_lng = $qr->teacher_lng;
-
-        $newCode = 'QREN-' . strtoupper(Str::random(8));
-
-        $qr->update([
-            'code' => $newCode,
-            'teacher_lat' => $request->teacher_lat,
-            'teacher_lng' => $request->teacher_lng,
-        ]);
-
-        \Log::info('Geolocation updated', [
-            'qr_id' => $qr->id,
-            'ajar_id' => $request->ajar_id,
-            'guru_id' => $guru->id,
-            'old_lat' => $old_lat,
-            'old_lng' => $old_lng,
-            'new_lat' => $request->teacher_lat,
-            'new_lng' => $request->teacher_lng,
-        ]);
-
-        // Fire the real-time geolocation update notification event
-        event(new GeolocationUpdateNotification($qr));
-
-        return response()->json(['success' => true]);
-    }
 
     public function getQrCodeSvg(Request $request)
     {

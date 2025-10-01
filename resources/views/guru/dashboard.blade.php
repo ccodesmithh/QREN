@@ -129,10 +129,11 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        @if($ajarsWithQr->count() > 0)
-            // Start periodic location update for all ajars with QR codes
-            startPeriodicLocationUpdateForAll({{ $ajarsWithQr->pluck('id')->toJson() }}, {{ (int) \App\Models\Setting::getValue('geolocation_update_interval', 5) }});
-        @endif
+        // Auto-regenerate QR code feature removed as per request
+        // @if($ajarsWithQr->count() > 0)
+        //     // Start periodic location update for all ajars with QR codes
+        //     startPeriodicLocationUpdateForAll({{ $ajarsWithQr->pluck('id')->toJson() }}, {{ (int) \App\Models\Setting::getValue('geolocation_update_interval', 5) }});
+        // @endif
     });
     </script>
 @endsection

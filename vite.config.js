@@ -12,3 +12,5 @@ export default defineConfig({
         }),
     ],
 });
+VITE_PUSHER_APP_KEY=b9e270c5bfc8cbef3676
+VITE_PUSHER_APP_CLUSTER=ap1

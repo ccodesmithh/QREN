@@ -198,12 +198,13 @@ function enableLocation(ajarId) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    @foreach($ajars as $ajar)
-        @if($ajar->qrcode)
-            // Start periodic location update for this ajar with interval from settings
-            startPeriodicLocationUpdate({{ $ajar->id }}, {{ (int) \App\Models\Setting::getValue('geolocation_update_interval', 5) }});
-        @endif
-    @endforeach
+    // Auto-regenerate QR code feature removed as per request
+    // @foreach($ajars as $ajar)
+    //     @if($ajar->qrcode)
+    //         // Start periodic location update for this ajar with interval from settings
+    //         startPeriodicLocationUpdate({{ $ajar->id }}, {{ (int) \App\Models\Setting::getValue('geolocation_update_interval', 5) }});
+    //     @endif
+    // @endforeach
 });
 </script>
 

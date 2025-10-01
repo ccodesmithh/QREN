@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\QrCode;
-use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Events\NewAttendanceNotification;
 
 class AttendanceController extends Controller
 {
@@ -56,19 +54,6 @@ class AttendanceController extends Controller
                 'status'     => $status,
                 'distance'   => $distance,
                 'scanned_at' => now(),
-            ]);
-
-            // Fire the real-time notification event
-            event(new NewAttendanceNotification($attendance));
-
-            // Create a notification record for the guru
-            Notification::create([
-                'guru_id' => $attendance->guru_id,
-                'type' => 'attendance',
-                'data' => json_encode([
-                    'message' => "New attendance recorded for student: " . $attendance->siswa->name . " at " . $attendance->scanned_at->toDateTimeString(),
-                    'attendance_id' => $attendance->id,
-                ]),
             ]);
 
             $ajar = $qr->ajar;
@@ -178,18 +163,7 @@ class AttendanceController extends Controller
             'scanned_at' => now(),
         ]);
 
-        // Fire the real-time notification event
-        event(new NewAttendanceNotification($attendance));
 
-        // Create a notification record for the guru
-        Notification::create([
-            'guru_id' => $attendance->guru_id,
-            'type' => 'attendance',
-            'data' => json_encode([
-                'message' => "New attendance recorded for student: " . $siswa->name . " at " . $attendance->scanned_at->toDateTimeString(),
-                'attendance_id' => $attendance->id,
-            ]),
-        ]);
 
         return back()->with('success', 'Absensi berhasil ditambahkan untuk ' . $siswa->name);
     }

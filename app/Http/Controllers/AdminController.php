@@ -22,7 +22,6 @@ class AdminController extends Controller
             'max_age' => Setting::getValue('max_age', '0'),
             'enable_high_accuracy' => Setting::getValue('enable_high_accuracy', 'true'),
             'scan_cooldown' => Setting::getValue('scan_cooldown', '10'),
-            'geolocation_update_interval' => Setting::getValue('geolocation_update_interval', '5'),
         ];
 
         $siswaQuery = Siswa::with('kelas', 'jurusan');
@@ -66,7 +65,6 @@ class AdminController extends Controller
             'max_age' => 'required|numeric|min:0',
             'enable_high_accuracy' => 'required|in:true,false',
             'scan_cooldown' => 'required|numeric|min:0',
-            'geolocation_update_interval' => 'required|numeric|min:1',
         ]);
 
         Setting::setValue('radius', $request->radius);
@@ -74,7 +72,6 @@ class AdminController extends Controller
         Setting::setValue('max_age', $request->max_age);
         Setting::setValue('enable_high_accuracy', $request->enable_high_accuracy);
         Setting::setValue('scan_cooldown', $request->scan_cooldown);
-        Setting::setValue('geolocation_update_interval', $request->geolocation_update_interval);
 
         return redirect()->route('admin.dashboard')->with('success', 'Settings updated successfully.');
     }
@@ -243,25 +240,26 @@ class AdminController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Jurusan deleted successfully.');
     }
 
-    public function regenerateQrCodes()
-    {
-        // Get all QR codes and regenerate them, keeping existing location data
-        $qrCodes = QrCode::all();
-        $regeneratedCount = 0;
+    // Removed regenerateQrCodes method as part of cleanup
+    // public function regenerateQrCodes()
+    // {
+    //     // Get all QR codes and regenerate them, keeping existing location data
+    //     $qrCodes = QrCode::all();
+    //     $regeneratedCount = 0;
 
-        foreach ($qrCodes as $qr) {
-            $newCode = 'QREN-' . strtoupper(Str::random(8));
-            // Update only the code, keep existing location data
-            $qr->update([
-                'code' => $newCode,
-            ]);
-            $regeneratedCount++;
-        }
+    //     foreach ($qrCodes as $qr) {
+    //         $newCode = 'QREN-' . strtoupper(Str::random(8));
+    //         // Update only the code, keep existing location data
+    //         $qr->update([
+    //             'code' => $newCode,
+    //         ]);
+    //         $regeneratedCount++;
+    //     }
 
-        return response()->json([
-            'success' => true,
-            'message' => "Successfully regenerated {$regeneratedCount} QR codes",
-            'count' => $regeneratedCount
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => "Successfully regenerated {$regeneratedCount} QR codes",
+    //         'count' => $regeneratedCount
+    //     ]);
+    // }
 }
