@@ -60,6 +60,7 @@ Route::middleware(['auth:guru'])->prefix('guru')->name('guru.')->group(function 
     Route::get('/history', [AttendanceController::class, 'guruHistory'])->name('history');
     Route::get('/history/download', [AttendanceController::class, 'downloadHistory'])->name('history.download');
     Route::get('/attendance', [AttendanceController::class, 'guruAttendance'])->name('attendance');
+    Route::get('/attendance/{ajarId}', [AttendanceController::class, 'attendanceByAjar'])->name('attendance.view');
     Route::post('/attendance/manual/{ajarId}', [AttendanceController::class, 'manualAttendance'])->name('attendance.manual');
 
     // Journal Routes
@@ -110,6 +111,7 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::delete('/jurusan/{jurusan}', [AdminController::class, 'destroyJurusan'])->name('jurusan.destroy');
 
     // Mapel management
+    Route::get('/mapel', [AdminController::class, 'index'])->name('mapel.index');
     Route::get('/mapel/create', [AdminController::class, 'createMapel'])->name('mapel.create');
     Route::post('/mapel', [AdminController::class, 'storeMapel'])->name('mapel.store');
     Route::get('/mapel/{mapel}/edit', [AdminController::class, 'editMapel'])->name('mapel.edit');

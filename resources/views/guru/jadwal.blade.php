@@ -43,6 +43,7 @@
                     <th>Kelas</th>
                     <th>Jurusan</th>
                     <th>Jam</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,6 +54,7 @@
                         <td>{{ $jadwal->kelas->kelas }}</td>
                         <td>{{ $jadwal->jurusan->jurusan }}</td>
                         <td>{{ $jadwal->jam_awal }}-{{ $jadwal->jam_akhir }}</td>
+                        <td><a href="{{ route('guru.attendance.view', $jadwal->id) }}" class="btn btn-primary">Lihat</a></td>
                     </tr>
                 @endforeach
             </tbody>
