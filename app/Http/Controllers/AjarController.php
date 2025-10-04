@@ -9,7 +9,9 @@ class AjarController extends Controller
 {
     public function index()
     {
-        return view('guru.ajar');
+        $guruId = auth()->guard('guru')->id();
+        $jadwals = Ajar::where('guru_id', $guruId)->with(['Mapel', 'Kelas', 'Jurusan'])->get();
+        return view('guru.jadwal', compact('jadwals'));
     }
 
     public function create()
@@ -44,11 +46,5 @@ class AjarController extends Controller
             return redirect()->back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data ajar. Silakan coba lagi.']);
         }
     }
-    public function jadwal()
-    {
-        $guruId = auth()->guard('guru')->id();
-        $jadwals = Ajar::where('guru_id', $guruId)->with(['Mapel', 'Kelas', 'Jurusan'])->get();
-        return view('guru.jadwal', compact('jadwals'));
-    }
-    
+
 }
