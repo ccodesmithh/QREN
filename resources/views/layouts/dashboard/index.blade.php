@@ -61,7 +61,7 @@
             </div>
             <span>Loading...</span> 
             <br>
-            <p>Programmed by Yudha Prasetiya</p>
+            <p>Programmed by Yudha Prasetiya & Dante Sauza</p>
         </div>
 
     <!-- Page Wrapper -->
@@ -76,7 +76,7 @@
                     <!-- <i class="fas fa-laugh-wink"></i> -->
                     <img src="{{asset('img/type1.png')}}" alt="" class="img-profile" loading="lazy" width="50px" height="50px">
                 </div>
-                <div class="sidebar-brand-text mx-3">QREN <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">QREN</div>
             </a>
 
             <!-- Divider -->
@@ -174,7 +174,7 @@
                                     </a>
                                 
                                 @elseif (Auth::guard('guru')->check())
-                                    <a class="dropdown-item" href="guru.profile">
+                                    <a class="dropdown-item" href="{{ route('guru.profile') }}">
                                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                         Profile
                                     </a>
@@ -182,7 +182,7 @@
                                         <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                         Settings
                                     </a>
-                                    <a class="dropdown-item" href="guru.history">
+                                    <a class="dropdown-item" href="{{ route('guru.history') }}">
                                         <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                         Activity Log
                                     </a>
@@ -224,7 +224,7 @@
                     <div class="copyright text-center my-auto">
                         <span>Copyright &copy; Pasific Studios</span>
                         <br>
-                        <span>Programmed by Yudha Prasetiya</span>
+                        <span>Programmed by Yudha Prasetiya & Dante Sauza</span>
                     </div>
                 </div>
             </footer>
